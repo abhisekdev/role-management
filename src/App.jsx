@@ -13,6 +13,7 @@ import Assets from './pages/Assets'
 function App() {
   return (
     <Routes>
+      <Route path='' element={<AdminLayout />} />
       <Route path='admin' element={<AdminLayout />}>
         <Route path='home' element={<Home />} />
         <Route path='users' element={<Users />} />
