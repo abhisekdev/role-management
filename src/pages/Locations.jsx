@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from 'react'
-import FeatureTable from '../components/FeatureTable'
-import { getLocations } from '../api/locationApi'
+import React, { useEffect } from 'react'
 import LocationTable from '../components/LocationTable'
+import { fetchLocations } from '../actions/appActions'
+import { Card, CardHeader } from '@chakra-ui/react'
+import { useAppContext } from '../context/AppContext'
 
 const LocationsPage = () => {
-  const [loactions, setLocations] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { state, dispatch } = useAppContext()
+  const { locations, loading, error } = state
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await getLocations()
-        setLocations(data)
-      } catch (error) {
-        setError(error.message)
-      } finally {
-        setLoading(false)
-      }
-    }
+    fetchLocations(dispatch)
+  }, [dispatch])
 
-    fetchUsers()
-  }, [])
+  if (loading)
+    return (
+      <Card>
+        <CardHeader>Loading...</CardHeader>
+      </Card>
+    )
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
+  if (error)
+    return (
+      <Card>
+        <CardHeader>Error: {error}</CardHeader>
+      </Card>
+    )
 
   return (
     <>
-      <LocationTable data={loactions} setUsers={setLocations} />
+      <LocationTable data={locations} />
     </>
   )
 }

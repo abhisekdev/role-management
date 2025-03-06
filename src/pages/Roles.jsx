@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react'
-import AssetsTable from '../components/AssetTable'
-import { fetchAssets } from '../actions/appActions'
-import { Card, CardHeader } from '@chakra-ui/react'
+import { useEffect } from 'react'
 import { useAppContext } from '../context/AppContext'
+import { fetchRoles } from '../actions/appActions'
+import { Card, CardHeader } from '@chakra-ui/react'
+import RoleTable from '../components/RoleTable'
 
-const AssetsPage = () => {
+const RolesPage = () => {
   const { state, dispatch } = useAppContext()
-  const { assets, loading, error } = state
+  const { roles, loading, error } = state
 
   useEffect(() => {
-    fetchAssets(dispatch)
+    fetchRoles(dispatch)
   }, [dispatch])
 
   if (loading)
@@ -28,9 +28,9 @@ const AssetsPage = () => {
 
   return (
     <>
-      <AssetsTable data={assets} />
+      <RoleTable data={roles} />
     </>
   )
 }
 
-export default AssetsPage
+export default RolesPage

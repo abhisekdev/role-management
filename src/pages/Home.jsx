@@ -8,12 +8,17 @@ import {
   StatNumber,
   useColorModeValue
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { FaBoxOpen, FaBurn, FaUsers, FaMap } from 'react-icons/fa'
-import { getUsers } from '../api/userApi'
-import { getFeatures } from '../api/featureApi'
-import { getLocations } from '../api/locationApi'
-import { getAssets } from '../api/assetApi'
+
+import {
+  fetchAssets,
+  fetchFeatures,
+  fetchLocations,
+  fetchRoles,
+  fetchUsers
+} from '../actions/appActions'
+import { useAppContext } from '../context/AppContext'
 
 const StatsCard = (props) => {
   const { title, stat, icon } = props
@@ -43,33 +48,16 @@ const StatsCard = (props) => {
 }
 
 const HomePage = () => {
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [totalUsers, setTotalUsers] = useState(0)
-  const [totalFeatures, setTotalFeatures] = useState(0)
-  const [totalLocations, setTotalLocations] = useState(0)
-  const [totalAssets, setTotalAssets] = useState(0)
+  const { state, dispatch } = useAppContext()
+  const { users, features, locations, assets, loading, error } = state
 
   useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        const users = await getUsers()
-        setTotalUsers(users?.length)
-        const features = await getFeatures()
-        setTotalFeatures(features?.length)
-        const locations = await getLocations()
-        setTotalLocations(locations?.length)
-        const assets = await getAssets()
-        setTotalAssets(assets?.length)
-      } catch (error) {
-        setError(error.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchCounts()
-  }, [])
+    fetchUsers(dispatch)
+    fetchFeatures(dispatch)
+    fetchLocations(dispatch)
+    fetchAssets(dispatch)
+    fetchRoles(dispatch)
+  }, [dispatch])
 
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error: {error}</div>
@@ -78,22 +66,22 @@ const HomePage = () => {
     <SimpleGrid columns={{ base: 1, md: 4 }} spacing={{ base: 1, lg: 4 }}>
       <StatsCard
         title={'Users'}
-        stat={totalUsers}
+        stat={users?.length}
         icon={<FaUsers size={'3em'} />}
       />
       <StatsCard
         title={'Features'}
-        stat={totalFeatures}
+        stat={features?.length}
         icon={<FaBurn size={'3em'} />}
       />
       <StatsCard
         title={'Locations'}
-        stat={totalLocations}
+        stat={locations?.length}
         icon={<FaMap size={'3em'} />}
       />
       <StatsCard
         title={'Assets'}
-        stat={totalAssets}
+        stat={assets?.length}
         icon={<FaBoxOpen size={'3em'} />}
       />
     </SimpleGrid>

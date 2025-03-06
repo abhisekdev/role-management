@@ -23,9 +23,9 @@ export const createUser = async (userData) => {
 }
 
 // Update a user
-export const updateUser = async (userId, userData) => {
+export const updateUser = async (userData) => {
   try {
-    const response = await axiosInstance.put(`/users/${userId}`, userData)
+    const response = await axiosInstance.put(`/users`, userData)
     return response.data
   } catch (error) {
     console.error('Error updating user:', error)

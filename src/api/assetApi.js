@@ -23,9 +23,9 @@ export const createAssets = async (userData) => {
 }
 
 // Update a user
-export const updateAssets = async (userId, userData) => {
+export const updateAssets = async (userData) => {
   try {
-    const response = await axiosInstance.put(`/assets/${userId}`, userData)
+    const response = await axiosInstance.put(`/assets`, userData)
     return response.data
   } catch (error) {
     console.error('Error updating assets:', error)

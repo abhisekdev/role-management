@@ -33,9 +33,9 @@ import {
 } from '@chakra-ui/react'
 import { LuArrowUpDown } from 'react-icons/lu'
 import { FaEllipsis, FaPlus } from 'react-icons/fa6'
-import LocationModal from './LocationModal'
+import RoleModal from './RoleModal'
 
-const LocationTable = ({ data }) => {
+const RoleTable = ({ data }) => {
   const [sorting, setSorting] = React.useState([])
   const [activeRow, setActiveRow] = React.useState(null)
   const [columnFilters, setColumnFilters] = React.useState([])
@@ -49,9 +49,11 @@ const LocationTable = ({ data }) => {
         accessorKey: 'name'
       },
       {
-        header: 'level',
-        accessorKey: 'level'
+        header: 'Privileges',
+        accessorKey: 'privileges',
+        cell: ({ getValue }) => getValue()?.join(', ') // Display privileges as a comma-separated string
       },
+
       {
         accessorKey: 'createdAt',
         header: ({ column }) => {
@@ -70,7 +72,6 @@ const LocationTable = ({ data }) => {
       },
       {
         accessorKey: 'updatedAt',
-        defaultSorting: 'desc',
         header: ({ column }) => {
           return (
             <Flex
@@ -83,7 +84,9 @@ const LocationTable = ({ data }) => {
             </Flex>
           )
         },
-        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString()
+        cell: ({ getValue }) => (
+          <Text w={'200px'}>{new Date(getValue()).toLocaleDateString()}</Text>
+        )
       },
       {
         accessorKey: 'actions',
@@ -162,7 +165,7 @@ const LocationTable = ({ data }) => {
               table.getColumn('name')?.setFilterValue(event.target.value)
             }
           />
-          <Tooltip label='Add New Location' placement='left'>
+          <Tooltip label='Add New Role' placement='left'>
             <IconButton
               colorScheme='blue'
               icon={<FaPlus />}
@@ -256,10 +259,10 @@ const LocationTable = ({ data }) => {
       </Card>
 
       {isOpen && (
-        <LocationModal data={activeRow} isOpen={isOpen} onClose={onClose} />
+        <RoleModal data={activeRow} isOpen={isOpen} onClose={onClose} />
       )}
     </>
   )
 }
 
-export default LocationTable
+export default RoleTable

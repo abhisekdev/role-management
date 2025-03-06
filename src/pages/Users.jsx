@@ -1,33 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import UserTable from '../components/UserTable'
-import { getUsers } from '../api/userApi'
+import { useAppContext } from '../context/AppContext'
+import { fetchUsers } from '../actions/appActions'
+import { Card, CardHeader } from '@chakra-ui/react'
 
 const UsersPage = () => {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { state, dispatch } = useAppContext()
+  const { users, loading, error } = state
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await getUsers()
-        setUsers(data)
-      } catch (error) {
-        setError(error.message)
-      } finally {
-        setLoading(false)
-      }
-    }
+    fetchUsers(dispatch)
+  }, [dispatch])
 
-    fetchUsers()
-  }, [])
+  if (loading)
+    return (
+      <Card>
+        <CardHeader>Loading...</CardHeader>
+      </Card>
+    )
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
+  if (error)
+    return (
+      <Card>
+        <CardHeader>Error: {error}</CardHeader>
+      </Card>
+    )
 
   return (
     <>
-      <UserTable data={users} setUsers={setUsers} />
+      <UserTable data={users} />
     </>
   )
 }

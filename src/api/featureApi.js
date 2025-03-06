@@ -23,9 +23,9 @@ export const createFeatures = async (userData) => {
 }
 
 // Update a user
-export const updateFeatures = async (userId, userData) => {
+export const updateFeatures = async (userData) => {
   try {
-    const response = await axiosInstance.put(`/features/${userId}`, userData)
+    const response = await axiosInstance.put(`/features`, userData)
     return response.data
   } catch (error) {
     console.error('Error updating features:', error)

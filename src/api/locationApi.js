@@ -23,9 +23,9 @@ export const createLocations = async (userData) => {
 }
 
 // Update a user
-export const updateLocations = async (userId, userData) => {
+export const updateLocations = async (userData) => {
   try {
-    const response = await axiosInstance.put(`/locations/${userId}`, userData)
+    const response = await axiosInstance.put(`/locations`, userData)
     return response.data
   } catch (error) {
     console.error('Error updating locations:', error)

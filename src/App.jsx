@@ -9,6 +9,7 @@ import Users from './pages/Users'
 import Features from './pages/Features'
 import Locations from './pages/Locations'
 import Assets from './pages/Assets'
+import Roles from './pages/Roles'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path='features' element={<Features />} />
         <Route path='locations' element={<Locations />} />
         <Route path='assets' element={<Assets />} />
+        <Route path='roles' element={<Roles />} />
       </Route>
       <Route path='auth' element={<AuthLayout />}>
         <Route path='login' element={<Signin />} />

@@ -1,33 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import FeatureTable from '../components/FeatureTable'
-import { getFeatures } from '../api/featureApi'
+import { useAppContext } from '../context/AppContext'
+import { fetchFeatures } from '../actions/appActions'
+import { Card, CardHeader } from '@chakra-ui/react'
 
 const FeaturesPage = () => {
-  const [features, setFeatures] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { state, dispatch } = useAppContext()
+  const { features, loading, error } = state
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await getFeatures()
-        setFeatures(data)
-      } catch (error) {
-        setError(error.message)
-      } finally {
-        setLoading(false)
-      }
-    }
+    fetchFeatures(dispatch)
+  }, [dispatch])
 
-    fetchUsers()
-  }, [])
+  if (loading)
+    return (
+      <Card>
+        <CardHeader>Loading...</CardHeader>
+      </Card>
+    )
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
+  if (error)
+    return (
+      <Card>
+        <CardHeader>Error: {error}</CardHeader>
+      </Card>
+    )
 
   return (
     <>
-      <FeatureTable data={features} setUsers={setFeatures} />
+      <FeatureTable data={features} />
     </>
   )
 }

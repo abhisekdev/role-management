@@ -34,7 +34,8 @@ const LinkItems = [
   { name: 'Users', icon: FiUser, link: '/admin/users' },
   { name: 'Features', icon: FiTrendingUp, link: '/admin/features' },
   { name: 'Locations', icon: FiCompass, link: '/admin/locations' },
-  { name: 'Assets', icon: FiStar, link: '/admin/assets' }
+  { name: 'Assets', icon: FiStar, link: '/admin/assets' },
+  { name: 'Roles', icon: FiStar, link: '/admin/roles' }
 ]
 
 const SidebarContent = ({ onClose, ...rest }) => {
@@ -82,9 +83,9 @@ const NavItem = ({ icon, link, children, ...rest }) => {
         borderRadius='lg'
         role='group'
         cursor='pointer'
-        _hover={{ bg: isActive ? 'cyan.500' : 'gray.100' }}
+        _hover={{ bg: isActive ? 'blue.500' : 'gray.100' }}
         color={isActive ? 'gray.100' : 'inherit'}
-        bg={isActive ? 'cyan.500' : 'inherit'}
+        bg={isActive ? 'blue.500' : 'inherit'}
         {...rest}
       >
         {icon && <Icon mr='4' fontSize='16' as={icon} />}
@@ -136,8 +137,12 @@ const MobileNav = ({ onOpen, ...rest }) => {
               _focus={{ boxShadow: 'none' }}
             >
               <HStack>
-                <Text fontSize='sm' display={{ base: 'none', md: 'block' }}>
-                  Justina Clark
+                <Text
+                  hidden
+                  fontSize='sm'
+                  display={{ base: 'none', md: 'block' }}
+                >
+                  Abhisek
                 </Text>
                 <Avatar
                   size={'sm'}
