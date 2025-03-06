@@ -37,7 +37,12 @@ import { FaEllipsis, FaPlus } from 'react-icons/fa6'
 import AssetModal from './AssetModal'
 
 const AssetsTable = ({ data }) => {
-  const [sorting, setSorting] = React.useState([])
+  const [sorting, setSorting] = React.useState([
+    {
+      id: 'updatedAt',
+      desc: true
+    }
+  ])
   const [activeRow, setActiveRow] = React.useState(null)
   const [columnFilters, setColumnFilters] = React.useState([])
   const { isOpen, onOpen, onClose } = useDisclosure()

@@ -36,7 +36,12 @@ import { FaEllipsis, FaPlus } from 'react-icons/fa6'
 import LocationModal from './LocationModal'
 
 const LocationTable = ({ data }) => {
-  const [sorting, setSorting] = React.useState([])
+  const [sorting, setSorting] = React.useState([
+    {
+      id: 'updatedAt',
+      desc: true
+    }
+  ])
   const [activeRow, setActiveRow] = React.useState(null)
   const [columnFilters, setColumnFilters] = React.useState([])
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -70,7 +75,6 @@ const LocationTable = ({ data }) => {
       },
       {
         accessorKey: 'updatedAt',
-        defaultSorting: 'desc',
         header: ({ column }) => {
           return (
             <Flex

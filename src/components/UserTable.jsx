@@ -36,7 +36,12 @@ import { FaEllipsis, FaPlus } from 'react-icons/fa6'
 import UserModal from './UserModal'
 
 const UserTable = ({ data }) => {
-  const [sorting, setSorting] = React.useState([])
+  const [sorting, setSorting] = React.useState([
+    {
+      id: 'createdAt',
+      desc: true
+    }
+  ])
   const [activeRow, setActiveRow] = React.useState(null)
   const [columnFilters, setColumnFilters] = React.useState([])
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -150,7 +155,7 @@ const UserTable = ({ data }) => {
 
   return (
     <>
-      <Card  w={'100%'} overflow={'hidden'}>
+      <Card w={'100%'} overflow={'hidden'}>
         <CardHeader
           as={Flex}
           gap={2}
