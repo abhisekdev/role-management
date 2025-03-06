@@ -130,7 +130,7 @@ const AssetsTable = ({ data }) => {
         }
       }
     ],
-    []
+    [onOpen]
   )
 
   // Initialize the table
@@ -162,7 +162,7 @@ const AssetsTable = ({ data }) => {
 
   return (
     <>
-      <Card w={'100%'}  overflow={'hidden'}>
+      <Card w={'100%'} overflow={'hidden'}>
         <CardHeader
           as={Flex}
           gap={2}
