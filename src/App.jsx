@@ -1,5 +1,5 @@
 import './App.css'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import AdminLayout from './layout/AdminLayout'
 import Home from './pages/Home'
 import AuthLayout from './layout/AuthLayout'
@@ -13,7 +13,7 @@ import Assets from './pages/Assets'
 function App() {
   return (
     <Routes>
-      <Route path='' element={<AdminLayout />} />
+      <Route path='' element={<Navigate to='/admin/home' replace />} />
       <Route path='admin' element={<AdminLayout />}>
         <Route path='home' element={<Home />} />
         <Route path='users' element={<Users />} />
