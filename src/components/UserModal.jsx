@@ -139,7 +139,7 @@ const UserModal = ({ data, isOpen, onClose }) => {
                   onChange={handleChange}
                 />
               </FormControl>
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor='roleId'>Role</FormLabel>
                 <Select
                   name='roleId'

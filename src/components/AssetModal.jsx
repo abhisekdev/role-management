@@ -142,7 +142,7 @@ const AssetModal = ({ data, isOpen, onClose }) => {
                   onChange={handleChange}
                 />
               </FormControl>
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor='locationId'>Location</FormLabel>
                 <Select
                   name='locationId'

@@ -56,7 +56,7 @@ const RoleTable = ({ data }) => {
       {
         header: 'Privileges',
         accessorKey: 'privileges',
-        cell: ({ getValue }) => getValue()?.join(', ') // Display privileges as a comma-separated string
+        cell: ({ getValue }) => getValue()?.join(', ') || 'N/A' // Display privileges as a comma-separated string
       },
 
       {
