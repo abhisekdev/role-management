@@ -21,7 +21,6 @@ import { fetchRoles } from '../actions/appActions'
 import { useAppContext } from '../context/AppContext'
 import ReactSelect from 'react-select'
 import { useSelect } from '../hooks/useSelect'
-import { createLocations, updateLocations } from '../api/locationApi'
 import { createRoles, updateRoles } from '../api/roleApi'
 
 const RoleModal = ({ data, isOpen, onClose }) => {
