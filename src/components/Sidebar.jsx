@@ -52,7 +52,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
       {...rest}
     >
       <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
-        <Text fontSize='xl' fontFamily='monospace' fontWeight='bold'>
+        <Text fontSize='lg' fontWeight='semibold'>
           Role Management
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
@@ -121,8 +121,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
         <Text
           display={{ base: 'flex', md: 'none' }}
           fontSize='lg'
-          fontFamily='monospace'
-          fontWeight='bold'
+          fontWeight='semibold'
         >
           Role Management
         </Text>
