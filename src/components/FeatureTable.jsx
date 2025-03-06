@@ -51,7 +51,7 @@ const FeatureTable = ({ data }) => {
         accessorKey: 'name',
         cell: ({ row }) => {
           return (
-            <Stack spacing={1} w={{ base: '400px', md: '500px' }}>
+            <Stack spacing={1} w={{ base: '400px', md: '500px', xl: '700px' }}>
               <Text>{row?.original?.name}</Text>
               <Text color={'gray.500'}>{row?.original?.description}</Text>
             </Stack>
