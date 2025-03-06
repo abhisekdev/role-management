@@ -51,7 +51,7 @@ const FeatureTable = ({ data }) => {
         accessorKey: 'name',
         cell: ({ row }) => {
           return (
-            <Stack>
+            <Stack spacing={1} w={{ base: '400px', md: '500px' }}>
               <Text>{row?.original?.name}</Text>
               <Text color={'gray.500'}>{row?.original?.description}</Text>
             </Stack>
@@ -73,7 +73,7 @@ const FeatureTable = ({ data }) => {
           )
         },
         cell: ({ getValue }) => (
-          <Text w={'200px'}>{new Date(getValue()).toLocaleDateString()}</Text>
+          <Text>{new Date(getValue()).toLocaleDateString()}</Text>
         )
       },
       {
@@ -91,7 +91,7 @@ const FeatureTable = ({ data }) => {
           )
         },
         cell: ({ getValue }) => (
-          <Text w={'200px'}>{new Date(getValue()).toLocaleDateString()}</Text>
+          <Text>{new Date(getValue()).toLocaleDateString()}</Text>
         )
       },
       {
@@ -156,7 +156,7 @@ const FeatureTable = ({ data }) => {
 
   return (
     <>
-      <Card>
+      <Card w={'100%'} overflow={'hidden'}>
         <CardHeader
           as={Flex}
           gap={2}
@@ -181,7 +181,7 @@ const FeatureTable = ({ data }) => {
         </CardHeader>
 
         {/* Table */}
-        <CardBody>
+        <CardBody overflowX={{ base: 'scroll', md: 'auto' }}>
           <Table>
             <Thead>
               {table.getHeaderGroups().map((headerGroup) => (

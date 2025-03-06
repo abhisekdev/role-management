@@ -147,7 +147,7 @@ const LocationTable = ({ data }) => {
 
   return (
     <>
-      <Card>
+      <Card w={'100%'} overflow={'hidden'}>
         <CardHeader
           as={Flex}
           gap={2}
@@ -172,7 +172,7 @@ const LocationTable = ({ data }) => {
         </CardHeader>
 
         {/* Table */}
-        <CardBody>
+        <CardBody overflowX={{ base: 'scroll', md: 'auto' }}>
           <Table>
             <Thead>
               {table.getHeaderGroups().map((headerGroup) => (

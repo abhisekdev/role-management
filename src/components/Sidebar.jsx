@@ -25,7 +25,8 @@ import {
   FiStar,
   FiMenu,
   FiBell,
-  FiUser
+  FiUser,
+  FiPenTool
 } from 'react-icons/fi'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -35,7 +36,7 @@ const LinkItems = [
   { name: 'Features', icon: FiTrendingUp, link: '/admin/features' },
   { name: 'Locations', icon: FiCompass, link: '/admin/locations' },
   { name: 'Assets', icon: FiStar, link: '/admin/assets' },
-  { name: 'Roles', icon: FiStar, link: '/admin/roles' }
+  { name: 'Roles', icon: FiPenTool, link: '/admin/roles' }
 ]
 
 const SidebarContent = ({ onClose, ...rest }) => {
@@ -159,7 +160,6 @@ const MobileNav = ({ onOpen, ...rest }) => {
             >
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
               <MenuDivider />
               <Link to={'/auth/login'}>
                 <MenuItem>Sign out</MenuItem>
