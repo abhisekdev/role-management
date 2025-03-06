@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import UserTable from '../components/UserTable'
 import { getUsers } from '../api/userApi'
 
-const Users = () => {
+const UsersPage = () => {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -32,4 +32,4 @@ const Users = () => {
   )
 }
 
-export default Users
+export default UsersPage
