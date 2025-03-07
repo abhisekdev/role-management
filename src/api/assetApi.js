@@ -1,9 +1,16 @@
 import axiosInstance from './axios'
+import Cookies from 'js-cookie'
+
+const token = Cookies.get('token')
 
 // Fetch all users
 export const getAssets = async () => {
   try {
-    const response = await axiosInstance.get('/assets')
+    const response = await axiosInstance.get('/assets', {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : ''
+      }
+    })
     return response.data
   } catch (error) {
     console.error('Error fetching assets:', error)
@@ -14,7 +21,11 @@ export const getAssets = async () => {
 // Create a new user
 export const createAssets = async (userData) => {
   try {
-    const response = await axiosInstance.post('/assets', userData)
+    const response = await axiosInstance.post('/assets', userData, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : ''
+      }
+    })
     return response.data
   } catch (error) {
     console.error('Error creating assets:', error)
@@ -25,7 +36,11 @@ export const createAssets = async (userData) => {
 // Update a user
 export const updateAssets = async (userData) => {
   try {
-    const response = await axiosInstance.put(`/assets`, userData)
+    const response = await axiosInstance.put(`/assets`, userData, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : ''
+      }
+    })
     return response.data
   } catch (error) {
     console.error('Error updating assets:', error)
@@ -36,7 +51,11 @@ export const updateAssets = async (userData) => {
 // Delete a user
 export const deleteAssets = async (userId) => {
   try {
-    const response = await axiosInstance.delete(`/assets/${userId}`)
+    const response = await axiosInstance.delete(`/assets/${userId}`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : ''
+      }
+    })
     return response.data
   } catch (error) {
     console.error('Error deleting assets:', error)

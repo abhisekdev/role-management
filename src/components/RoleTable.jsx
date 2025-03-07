@@ -29,22 +29,36 @@ import {
   Thead,
   Tooltip,
   Tr,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react'
 import { LuArrowUpDown } from 'react-icons/lu'
 import { FaEllipsis, FaPlus } from 'react-icons/fa6'
 import RoleModal from './RoleModal'
+import { useAppContext } from '../context/AppContext'
+import { deleteRoles } from '../api/roleApi'
+import { fetchRoles } from '../actions/appActions'
+import DeleteModal from './DeleteModal'
+import RoleDrawer from './RoleDrawer'
 
 const RoleTable = ({ data }) => {
+  const toast = useToast()
+  const { dispatch } = useAppContext()
+
   const [sorting, setSorting] = React.useState([
     {
       id: 'updatedAt',
       desc: true
     }
   ])
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState(null)
   const [activeRow, setActiveRow] = React.useState(null)
   const [columnFilters, setColumnFilters] = React.useState([])
-  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const VIEW = useDisclosure()
+  const EDIT = useDisclosure()
+  const DELETE = useDisclosure()
 
   // Define columns for the table
   const columns = useMemo(
@@ -58,7 +72,6 @@ const RoleTable = ({ data }) => {
         accessorKey: 'privileges',
         cell: ({ getValue }) => getValue()?.join(', ') || 'N/A' // Display privileges as a comma-separated string
       },
-
       {
         accessorKey: 'createdAt',
         header: ({ column }) => {
@@ -66,6 +79,7 @@ const RoleTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
+              w={{ base: '120px', md: 'auto' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Created At</Text>
@@ -82,6 +96,7 @@ const RoleTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
+              w={{ base: '120px', md: 'auto' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Updated At</Text>
@@ -99,7 +114,15 @@ const RoleTable = ({ data }) => {
         cell: ({ row }) => {
           const handleEdit = () => {
             setActiveRow(row?.original)
-            onOpen()
+            EDIT.onOpen()
+          }
+          const handleView = () => {
+            setActiveRow(row?.original)
+            VIEW.onOpen()
+          }
+          const handleDelete = () => {
+            setActiveRow(row?.original)
+            DELETE.onOpen()
           }
           return (
             <Flex justifyContent={'flex-end'}>
@@ -112,8 +135,18 @@ const RoleTable = ({ data }) => {
                 />
                 <Portal>
                   <MenuList>
+                    <MenuItem fontSize='sm' onClick={handleView}>
+                      View
+                    </MenuItem>
                     <MenuItem fontSize='sm' onClick={handleEdit}>
                       Edit
+                    </MenuItem>
+                    <MenuItem
+                      fontSize='sm'
+                      color={'red.500'}
+                      onClick={handleDelete}
+                    >
+                      Delete
                     </MenuItem>
                   </MenuList>
                 </Portal>
@@ -123,7 +156,7 @@ const RoleTable = ({ data }) => {
         }
       }
     ],
-    [onOpen]
+    [DELETE, EDIT, VIEW]
   )
 
   // Initialize the table
@@ -150,7 +183,30 @@ const RoleTable = ({ data }) => {
 
   const handleCreate = () => {
     setActiveRow(null)
-    onOpen()
+    EDIT.onOpen()
+  }
+
+  const handleConfirm = async () => {
+    try {
+      setLoading(true)
+      const data = await deleteRoles(activeRow?._id)
+      if (data) {
+        await fetchRoles(dispatch)
+        toast({
+          position: 'bottom-right',
+          title: 'Role deleted successfully',
+          description: "We've deleted the role",
+          status: 'success',
+          duration: 9000,
+          isClosable: true
+        })
+      }
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
+      DELETE.onClose()
+    }
   }
 
   return (
@@ -263,8 +319,32 @@ const RoleTable = ({ data }) => {
         </CardFooter>
       </Card>
 
-      {isOpen && (
-        <RoleModal data={activeRow} isOpen={isOpen} onClose={onClose} />
+      {EDIT.isOpen && (
+        <RoleModal
+          data={activeRow}
+          isOpen={EDIT.isOpen}
+          onClose={EDIT.onClose}
+        />
+      )}
+
+      {DELETE.isOpen && (
+        <DeleteModal
+          error={error}
+          loading={loading}
+          title='Delete Role'
+          isOpen={DELETE.isOpen}
+          onClose={DELETE.onClose}
+          onConfirm={handleConfirm}
+          description='Are you sure you want to delete this role? This action cannot be undone.'
+        />
+      )}
+
+      {VIEW.isOpen && (
+        <RoleDrawer
+          data={activeRow}
+          isOpen={VIEW.isOpen}
+          onClose={VIEW.onClose}
+        />
       )}
     </>
   )

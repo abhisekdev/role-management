@@ -30,23 +30,35 @@ import {
   Thead,
   Tr,
   Tooltip,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react'
 import { LuArrowUpDown } from 'react-icons/lu'
 import FeatureModal from './FeatureModal'
 import { FaEllipsis, FaPlus } from 'react-icons/fa6'
+import { useAppContext } from '../context/AppContext'
+import { deleteFeatures } from '../api/featureApi'
+import { fetchFeatures } from '../actions/appActions'
+import DeleteModal from './DeleteModal'
 
 const FeatureTable = ({ data }) => {
+  const toast = useToast()
+  const { dispatch } = useAppContext()
+
   const [sorting, setSorting] = React.useState([
     {
       id: 'updatedAt',
       desc: true
     }
   ])
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState(null)
   const [activeRow, setActiveRow] = React.useState(null)
   const [columnFilters, setColumnFilters] = React.useState([])
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const VIEW = useDisclosure()
+  const EDIT = useDisclosure()
+  const DELETE = useDisclosure()
 
   // Define columns for the table
   const columns = useMemo(
@@ -70,6 +82,7 @@ const FeatureTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
+              w={{ base: '150px', md: 'auto' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Created At</Text>
@@ -88,6 +101,7 @@ const FeatureTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
+              w={{ base: '150px', md: 'auto' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Updated At</Text>
@@ -105,7 +119,15 @@ const FeatureTable = ({ data }) => {
         cell: ({ row }) => {
           const handleEdit = () => {
             setActiveRow(row?.original)
-            onOpen()
+            EDIT.onOpen()
+          }
+          const handleView = () => {
+            setActiveRow(row?.original)
+            VIEW.onOpen()
+          }
+          const handleDelete = () => {
+            setActiveRow(row?.original)
+            DELETE.onOpen()
           }
           return (
             <Flex justifyContent={'flex-end'}>
@@ -118,8 +140,18 @@ const FeatureTable = ({ data }) => {
                 />
                 <Portal>
                   <MenuList>
+                    <MenuItem hidden fontSize='sm' onClick={handleView}>
+                      View
+                    </MenuItem>
                     <MenuItem fontSize='sm' onClick={handleEdit}>
                       Edit
+                    </MenuItem>
+                    <MenuItem
+                      fontSize='sm'
+                      color={'red.500'}
+                      onClick={handleDelete}
+                    >
+                      Delete
                     </MenuItem>
                   </MenuList>
                 </Portal>
@@ -129,7 +161,7 @@ const FeatureTable = ({ data }) => {
         }
       }
     ],
-    [onOpen]
+    [DELETE, EDIT, VIEW]
   )
 
   // Initialize the table
@@ -156,7 +188,30 @@ const FeatureTable = ({ data }) => {
 
   const handleCreate = () => {
     setActiveRow(null)
-    onOpen()
+    EDIT.onOpen()
+  }
+
+  const handleConfirm = async () => {
+    try {
+      setLoading(true)
+      const data = await deleteFeatures(activeRow?._id)
+      if (data) {
+        await fetchFeatures(dispatch)
+        toast({
+          position: 'bottom-right',
+          title: 'Feature deleted successfully',
+          description: "We've deleted the feature",
+          status: 'success',
+          duration: 9000,
+          isClosable: true
+        })
+      }
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
+      DELETE.onClose()
+    }
   }
 
   return (
@@ -269,8 +324,24 @@ const FeatureTable = ({ data }) => {
         </CardFooter>
       </Card>
 
-      {isOpen && (
-        <FeatureModal data={activeRow} isOpen={isOpen} onClose={onClose} />
+      {EDIT.isOpen && (
+        <FeatureModal
+          data={activeRow}
+          isOpen={EDIT.isOpen}
+          onClose={EDIT.onClose}
+        />
+      )}
+
+      {DELETE.isOpen && (
+        <DeleteModal
+          error={error}
+          loading={loading}
+          title='Delete Feature'
+          isOpen={DELETE.isOpen}
+          onClose={DELETE.onClose}
+          onConfirm={handleConfirm}
+          description='Are you sure you want to delete this feature? This action cannot be undone.'
+        />
       )}
     </>
   )

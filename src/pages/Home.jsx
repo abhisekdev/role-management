@@ -1,6 +1,7 @@
 import {
   Box,
   Card,
+  CardHeader,
   Flex,
   SimpleGrid,
   Stat,
@@ -19,17 +20,21 @@ import {
   fetchUsers
 } from '../actions/appActions'
 import { useAppContext } from '../context/AppContext'
+import { Link } from 'react-router-dom'
 
 const StatsCard = (props) => {
-  const { title, stat, icon } = props
+  const { title, stat, icon, link } = props
+
   return (
     <Card>
       <Stat px={{ base: 2, md: 4 }} py={'5'} rounded={'lg'}>
         <Flex justifyContent={'space-between'}>
           <Box pl={{ base: 2, md: 4 }}>
-            <StatLabel fontWeight={'medium'} isTruncated>
-              {title}
-            </StatLabel>
+            <Link to={link}>
+              <StatLabel fontWeight={'medium'} isTruncated>
+                {title}
+              </StatLabel>
+            </Link>
             <StatNumber fontSize={'2xl'} fontWeight={'medium'}>
               {stat}
             </StatNumber>
@@ -59,28 +64,43 @@ const HomePage = () => {
     fetchRoles(dispatch)
   }, [dispatch])
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
+  if (loading)
+    return (
+      <Card>
+        <CardHeader>Loading...</CardHeader>
+      </Card>
+    )
+
+  if (error)
+    return (
+      <Card>
+        <CardHeader>Error: {error}</CardHeader>
+      </Card>
+    )
 
   return (
-    <SimpleGrid columns={{ base: 1, md: 4 }} spacing={{ base: 1, lg: 4 }}>
+    <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 3, lg: 4 }}>
       <StatsCard
         title={'Users'}
+        link='/admin/users'
         stat={users?.length}
         icon={<FaUsers size={'3em'} />}
       />
       <StatsCard
         title={'Features'}
+        link='/admin/features'
         stat={features?.length}
         icon={<FaBurn size={'3em'} />}
       />
       <StatsCard
         title={'Locations'}
+        link='/admin/locations'
         stat={locations?.length}
         icon={<FaMap size={'3em'} />}
       />
       <StatsCard
         title={'Assets'}
+        link='/admin/assets'
         stat={assets?.length}
         icon={<FaBoxOpen size={'3em'} />}
       />

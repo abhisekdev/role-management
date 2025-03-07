@@ -46,7 +46,7 @@ const UserModal = ({ data, isOpen, onClose }) => {
     try {
       setLoading(true)
       const data = await createUser(formData)
-      if (data?.username) {
+      if (data) {
         await fetchUsers(dispatch)
         toast({
           position: 'bottom-right',
@@ -69,7 +69,7 @@ const UserModal = ({ data, isOpen, onClose }) => {
     try {
       setLoading(true)
       const data = await updateUser({ userId: _id, ...formData })
-      if (data?.username) {
+      if (data) {
         await fetchUsers(dispatch)
         toast({
           position: 'bottom-right',

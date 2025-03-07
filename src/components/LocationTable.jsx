@@ -29,29 +29,46 @@ import {
   Thead,
   Tooltip,
   Tr,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react'
 import { LuArrowUpDown } from 'react-icons/lu'
 import { FaEllipsis, FaPlus } from 'react-icons/fa6'
 import LocationModal from './LocationModal'
+import { useAppContext } from '../context/AppContext'
+import DeleteModal from './DeleteModal'
+import { fetchLocations } from '../actions/appActions'
+import { deleteLocations } from '../api/locationApi'
+import LocationDrawer from './LocationDrawer'
 
 const LocationTable = ({ data }) => {
+  const toast = useToast()
+  const { dispatch } = useAppContext()
+
   const [sorting, setSorting] = React.useState([
     {
       id: 'updatedAt',
       desc: true
     }
   ])
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState(null)
   const [activeRow, setActiveRow] = React.useState(null)
   const [columnFilters, setColumnFilters] = React.useState([])
-  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const VIEW = useDisclosure()
+  const EDIT = useDisclosure()
+  const DELETE = useDisclosure()
 
   // Define columns for the table
   const columns = useMemo(
     () => [
       {
         header: 'name',
-        accessorKey: 'name'
+        accessorKey: 'name',
+        cell: ({ getValue }) => (
+          <Text w={{ base: '200px', md: 'auto' }}>{getValue()}</Text>
+        )
       },
       {
         header: 'level',
@@ -64,6 +81,7 @@ const LocationTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
+              w={{ base: '120px', md: 'auto' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Created At</Text>
@@ -80,6 +98,7 @@ const LocationTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
+              w={{ base: '120px', md: 'auto' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Updated At</Text>
@@ -95,7 +114,15 @@ const LocationTable = ({ data }) => {
         cell: ({ row }) => {
           const handleEdit = () => {
             setActiveRow(row?.original)
-            onOpen()
+            EDIT.onOpen()
+          }
+          const handleView = () => {
+            setActiveRow(row?.original)
+            VIEW.onOpen()
+          }
+          const handleDelete = () => {
+            setActiveRow(row?.original)
+            DELETE.onOpen()
           }
           return (
             <Flex justifyContent={'flex-end'}>
@@ -108,8 +135,18 @@ const LocationTable = ({ data }) => {
                 />
                 <Portal>
                   <MenuList>
+                    <MenuItem fontSize='sm' onClick={handleView}>
+                      View
+                    </MenuItem>
                     <MenuItem fontSize='sm' onClick={handleEdit}>
                       Edit
+                    </MenuItem>
+                    <MenuItem
+                      fontSize='sm'
+                      color={'red.500'}
+                      onClick={handleDelete}
+                    >
+                      Delete
                     </MenuItem>
                   </MenuList>
                 </Portal>
@@ -119,7 +156,7 @@ const LocationTable = ({ data }) => {
         }
       }
     ],
-    [onOpen]
+    [DELETE, EDIT, VIEW]
   )
 
   // Initialize the table
@@ -146,7 +183,30 @@ const LocationTable = ({ data }) => {
 
   const handleCreate = () => {
     setActiveRow(null)
-    onOpen()
+    EDIT.onOpen()
+  }
+
+  const handleConfirm = async () => {
+    try {
+      setLoading(true)
+      const data = await deleteLocations(activeRow?._id)
+      if (data) {
+        await fetchLocations(dispatch)
+        toast({
+          position: 'bottom-right',
+          title: 'Location deleted successfully',
+          description: "We've deleted the location",
+          status: 'success',
+          duration: 9000,
+          isClosable: true
+        })
+      }
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
+      DELETE.onClose()
+    }
   }
 
   return (
@@ -259,8 +319,32 @@ const LocationTable = ({ data }) => {
         </CardFooter>
       </Card>
 
-      {isOpen && (
-        <LocationModal data={activeRow} isOpen={isOpen} onClose={onClose} />
+      {EDIT.isOpen && (
+        <LocationModal
+          data={activeRow}
+          isOpen={EDIT.isOpen}
+          onClose={EDIT.onClose}
+        />
+      )}
+
+      {DELETE.isOpen && (
+        <DeleteModal
+          error={error}
+          loading={loading}
+          title='Delete Location'
+          isOpen={DELETE.isOpen}
+          onClose={DELETE.onClose}
+          onConfirm={handleConfirm}
+          description='Are you sure you want to delete this location? This action cannot be undone.'
+        />
+      )}
+
+      {VIEW.isOpen && (
+        <LocationDrawer
+          data={activeRow}
+          isOpen={VIEW.isOpen}
+          onClose={VIEW.onClose}
+        />
       )}
     </>
   )

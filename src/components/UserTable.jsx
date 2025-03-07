@@ -29,22 +29,36 @@ import {
   Thead,
   Tooltip,
   Tr,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react'
 import { LuArrowUpDown } from 'react-icons/lu'
 import { FaEllipsis, FaPlus } from 'react-icons/fa6'
 import UserModal from './UserModal'
+import DeleteModal from './DeleteModal'
+import { deleteUser } from '../api/userApi'
+import { fetchUsers } from '../actions/appActions'
+import { useAppContext } from '../context/AppContext'
+import UserDrawer from './UserDrawer'
 
 const UserTable = ({ data }) => {
+  const toast = useToast()
+  const { dispatch } = useAppContext()
+  const user = JSON.parse(localStorage.getItem('user'))
+
   const [sorting, setSorting] = React.useState([
     {
       id: 'createdAt',
       desc: true
     }
   ])
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState(null)
   const [activeRow, setActiveRow] = React.useState(null)
   const [columnFilters, setColumnFilters] = React.useState([])
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const VIEW = useDisclosure()
+  const EDIT = useDisclosure()
+  const DELETE = useDisclosure()
 
   // Define columns for the table
   const columns = useMemo(
@@ -70,12 +84,19 @@ const UserTable = ({ data }) => {
       },
       {
         header: 'Role',
-        accessorKey: 'role.name'
+        accessorKey: 'role.name',
+        cell: ({ getValue }) => (
+          <Text w={{ base: '200px', md: 'auto' }}>{getValue()}</Text>
+        )
       },
       {
         header: 'Privileges',
         accessorKey: 'role.privileges',
-        cell: ({ getValue }) => getValue()?.join(', ') // Display privileges as a comma-separated string
+        cell: ({ getValue }) => (
+          <Text w={{ base: '140px', md: 'auto' }}>
+            {getValue()?.join(', ')}
+          </Text>
+        )
       },
       {
         accessorKey: 'createdAt',
@@ -84,6 +105,7 @@ const UserTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
+              w={{ base: '120px', md: 'auto' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Created At</Text>
@@ -99,7 +121,15 @@ const UserTable = ({ data }) => {
         cell: ({ row }) => {
           const handleEdit = () => {
             setActiveRow(row?.original)
-            onOpen()
+            EDIT.onOpen()
+          }
+          const handleView = () => {
+            setActiveRow(row?.original)
+            VIEW.onOpen()
+          }
+          const handleDelete = () => {
+            setActiveRow(row?.original)
+            DELETE.onOpen()
           }
           return (
             <Flex justifyContent={'flex-end'}>
@@ -112,8 +142,19 @@ const UserTable = ({ data }) => {
                 />
                 <Portal>
                   <MenuList>
+                    <MenuItem fontSize='sm' onClick={handleView}>
+                      View
+                    </MenuItem>
                     <MenuItem fontSize='sm' onClick={handleEdit}>
                       Edit
+                    </MenuItem>
+                    <MenuItem
+                      fontSize='sm'
+                      color={'red.500'}
+                      onClick={handleDelete}
+                      hidden={row?.original?.username === user?.name}
+                    >
+                      Delete
                     </MenuItem>
                   </MenuList>
                 </Portal>
@@ -123,7 +164,7 @@ const UserTable = ({ data }) => {
         }
       }
     ],
-    [onOpen]
+    [DELETE, EDIT, VIEW, user?.name]
   )
 
   // Initialize the table
@@ -150,7 +191,30 @@ const UserTable = ({ data }) => {
 
   const handleCreate = () => {
     setActiveRow(null)
-    onOpen()
+    EDIT.onOpen()
+  }
+
+  const handleConfirm = async () => {
+    try {
+      setLoading(true)
+      const data = await deleteUser(activeRow?._id)
+      if (data) {
+        await fetchUsers(dispatch)
+        toast({
+          position: 'bottom-right',
+          title: 'User deleted successfully',
+          description: "We've deleted the user",
+          status: 'success',
+          duration: 9000,
+          isClosable: true
+        })
+      }
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
+      DELETE.onClose()
+    }
   }
 
   return (
@@ -263,8 +327,32 @@ const UserTable = ({ data }) => {
         </CardFooter>
       </Card>
 
-      {isOpen && (
-        <UserModal data={activeRow} isOpen={isOpen} onClose={onClose} />
+      {EDIT.isOpen && (
+        <UserModal
+          data={activeRow}
+          isOpen={EDIT.isOpen}
+          onClose={EDIT.onClose}
+        />
+      )}
+
+      {DELETE.isOpen && (
+        <DeleteModal
+          error={error}
+          loading={loading}
+          title='Delete User'
+          isOpen={DELETE.isOpen}
+          onClose={DELETE.onClose}
+          onConfirm={handleConfirm}
+          description='Are you sure you want to delete this user? This action cannot be undone.'
+        />
+      )}
+
+      {VIEW.isOpen && (
+        <UserDrawer
+          data={activeRow}
+          isOpen={VIEW.isOpen}
+          onClose={VIEW.onClose}
+        />
       )}
     </>
   )

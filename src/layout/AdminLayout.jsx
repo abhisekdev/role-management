@@ -1,8 +1,14 @@
-import React from 'react'
 import SidebarWithHeader from '../components/Sidebar'
-import { Outlet } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
+import Cookies from 'js-cookie'
 
 const AdminLayout = () => {
+  const token = Cookies.get('token')
+
+  if (!token) {
+    return <Navigate to='/auth/login' replace />
+  }
+
   return (
     <SidebarWithHeader>
       <Outlet />

@@ -4,7 +4,6 @@ import {
   Box,
   CloseButton,
   Flex,
-  HStack,
   Icon,
   useColorModeValue,
   Text,
@@ -29,6 +28,7 @@ import {
   FiPenTool
 } from 'react-icons/fi'
 import { Link, useLocation } from 'react-router-dom'
+import Cookies from 'js-cookie'
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, link: '/admin/home' },
@@ -59,7 +59,12 @@ const SidebarContent = ({ onClose, ...rest }) => {
       </Flex>
       <Stack spacing={1}>
         {LinkItems.map((item) => (
-          <NavItem key={item.name} icon={item.icon} link={item?.link}>
+          <NavItem
+            key={item.name}
+            onClose={onClose}
+            icon={item.icon}
+            link={item?.link}
+          >
             {item.name}
           </NavItem>
         ))}
@@ -68,14 +73,14 @@ const SidebarContent = ({ onClose, ...rest }) => {
   )
 }
 
-const NavItem = ({ icon, link, children, ...rest }) => {
+const NavItem = ({ icon, onClose, link, children, ...rest }) => {
   const location = useLocation()
   const { pathname } = location
 
   const isActive = pathname === link
 
   return (
-    <Link to={link}>
+    <Link to={link} onClick={onClose}>
       <Flex
         align='center'
         px='4'
@@ -97,6 +102,14 @@ const NavItem = ({ icon, link, children, ...rest }) => {
 }
 
 const MobileNav = ({ onOpen, ...rest }) => {
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  const handleLogout = () => {
+    Cookies.remove('token')
+    localStorage.clear()
+    window.location.href = '/auth/login'
+  }
+
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -128,7 +141,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       </Flex>
 
       <Flex gap={5} alignItems={'center'}>
-        <IconButton icon={<FiBell />} />
+        <IconButton hidden size={'sm'} icon={<FiBell />} />
         <Flex alignItems={'center'}>
           <Menu>
             <MenuButton
@@ -136,33 +149,28 @@ const MobileNav = ({ onOpen, ...rest }) => {
               transition='all 0.3s'
               _focus={{ boxShadow: 'none' }}
             >
-              <HStack>
+              <Flex gap={2} alignItems={'center'}>
                 <Text
                   hidden
                   fontSize='sm'
                   display={{ base: 'none', md: 'block' }}
                 >
-                  Abhisek
+                  {user?.name || 'Test'}
                 </Text>
-                <Avatar
-                  size={'sm'}
-                  src={
-                    'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                  }
-                />
-              </HStack>
+                <Avatar size={'sm'} name={user?.name || 'Test'} />
+              </Flex>
             </MenuButton>
             <MenuList
               fontSize={'sm'}
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}
             >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
+              <MenuItem as={Stack} spacing={0} alignItems={'flex-start'}>
+                <Text>{user?.name || ''}</Text>
+                <Text color={'gray.500'}>{user?.email || ''}</Text>
+              </MenuItem>
               <MenuDivider />
-              <Link to={'/auth/login'}>
-                <MenuItem>Sign out</MenuItem>
-              </Link>
+              <MenuItem onClick={handleLogout}>Sign out</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
