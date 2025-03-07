@@ -14,6 +14,7 @@ import {
   CardFooter,
   CardHeader,
   Flex,
+  Heading,
   IconButton,
   Input,
   Menu,
@@ -228,9 +229,17 @@ const UserTable = ({ data }) => {
           alignItems={'center'}
           justifyContent={'space-between'}
         >
+          <Heading
+            size={'sm'}
+            fontFamily={'inherit'}
+            hidden={location?.pathname === '/admin/users'}
+          >
+            Users
+          </Heading>
           <Input
             w={'300px'}
             placeholder='Search name...'
+            hidden={location?.pathname === '/admin/home'}
             value={table?.getColumn('username')?.getFilterValue() ?? ''}
             onChange={(event) =>
               table.getColumn('username')?.setFilterValue(event.target.value)

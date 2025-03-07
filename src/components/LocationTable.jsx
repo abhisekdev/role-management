@@ -14,6 +14,7 @@ import {
   CardFooter,
   CardHeader,
   Flex,
+  Heading,
   IconButton,
   Input,
   Menu,
@@ -220,6 +221,13 @@ const LocationTable = ({ data }) => {
           alignItems={'center'}
           justifyContent={'space-between'}
         >
+          <Heading
+            size={'sm'}
+            fontFamily={'inherit'}
+            hidden={location?.pathname === '/admin/locations'}
+          >
+            Locations
+          </Heading>
           <Input
             w={'300px'}
             placeholder='Search name...'
@@ -227,6 +235,7 @@ const LocationTable = ({ data }) => {
             onChange={(event) =>
               table.getColumn('name')?.setFilterValue(event.target.value)
             }
+            hidden={location?.pathname === '/admin/home'}
           />
           <Tooltip label='Add New Location' placement='left'>
             <IconButton
