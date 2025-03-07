@@ -226,7 +226,10 @@ const HomePage = () => {
           </CardBody>
         </Card>
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 1, lg: 2 }} spacing={6}>
+      <SimpleGrid
+        columns={{ base: 1, md: 1, lg: 2 }}
+        spacing={{ base: 3, lg: 4 }}
+      >
         <UserTable data={users} />
         <LocationTable data={locations} />
       </SimpleGrid>
