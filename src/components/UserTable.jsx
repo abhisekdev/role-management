@@ -89,18 +89,18 @@ const UserTable = ({ data }) => {
         header: 'Role',
         accessorKey: 'role.name',
         cell: ({ getValue }) => (
-          <Text w={{ base: '200px', md: 'auto' }}>{getValue()}</Text>
+          <Text w={{ base: '200px', md: 'auto' }}>{getValue() || 'N/A'}</Text>
         )
       },
-      // {
-      //   header: 'Privileges',
-      //   accessorKey: 'role.privileges',
-      //   cell: ({ getValue }) => (
-      //     <Text w={{ base: '140px', md: 'auto' }}>
-      //       {getValue()?.join(', ')}
-      //     </Text>
-      //   )
-      // },
+      {
+        header: 'Privileges',
+        accessorKey: 'role.privileges',
+        cell: ({ getValue }) => (
+          <Text w={{ base: '140px', md: 'auto' }}>
+            {getValue()?.join(', ') || 'N/A'}
+          </Text>
+        )
+      },
       {
         accessorKey: 'createdAt',
         header: ({ column }) => {
@@ -180,7 +180,7 @@ const UserTable = ({ data }) => {
         pageSize: 20
       },
       columnVisibility: {
-        email: location?.pathname === '/admin/home' ? false : true,
+        username: location?.pathname === '/admin/home' ? false : true,
         actions: location?.pathname === '/admin/home' ? false : true
       }
     },
@@ -241,7 +241,7 @@ const UserTable = ({ data }) => {
             Recent User List
           </Heading>
           <Input
-            w={'300px'}
+            w={{ base: '250px', md: '300px' }}
             placeholder='Search name...'
             hidden={location?.pathname === '/admin/home'}
             value={table?.getColumn('username')?.getFilterValue() ?? ''}

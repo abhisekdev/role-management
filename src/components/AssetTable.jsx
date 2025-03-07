@@ -222,7 +222,7 @@ const AssetsTable = ({ data }) => {
           justifyContent={'space-between'}
         >
           <Input
-            w={'300px'}
+            w={{ base: '250px', md: '300px' }}
             placeholder='Search name...'
             value={table?.getColumn('name')?.getFilterValue() ?? ''}
             onChange={(event) =>
