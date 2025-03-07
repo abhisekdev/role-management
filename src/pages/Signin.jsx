@@ -42,7 +42,10 @@ const Signin = () => {
     e.preventDefault()
     try {
       setLoading(true)
-      const data = await login({ ...formData })
+      const data = await login({
+        email: formData?.email,
+        password: formData?.password
+      })
       if (data?.token) {
         Cookies.set('token', data?.token, { expires: 7 })
         localStorage.setItem('user', JSON.stringify(data?.user))
@@ -67,7 +70,9 @@ const Signin = () => {
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
       <Flex p={8} flex={1} align={'center'} justify={'center'}>
         <Stack spacing={4} w={'full'} maxW={'md'}>
-          <Heading fontSize={'2xl'}>Sign in to your account</Heading>
+          <Heading fontSize={'2xl'}>
+            Sign in to your account <br /> {'(Super Admin)'}
+          </Heading>
           <Spacer />
           <form onSubmit={handleSubmit}>
             <Stack spacing={4} w={'100%'}>
@@ -77,7 +82,7 @@ const Signin = () => {
                   {error}
                 </Alert>
               )}
-              <FormControl id='username' isRequired>
+              {/* <FormControl id='username' isRequired>
                 <FormLabel htmlFor='username'>Username</FormLabel>
                 <Input
                   type='text'
@@ -85,7 +90,7 @@ const Signin = () => {
                   value={formData?.username}
                   onChange={handleChange}
                 />
-              </FormControl>
+              </FormControl> */}
               <FormControl id='email' isRequired>
                 <FormLabel htmlFor='email'>Email address</FormLabel>
                 <Input
@@ -144,12 +149,13 @@ const Signin = () => {
           </Flex>
         </Stack>
       </Flex>
-      <Flex flex={1} display={{ base: 'none', md: 'flex' }}>
+      <Flex flex={1} h={'100vh'} display={{ base: 'none', md: 'flex' }}>
         <Image
+          width={'100%'}
           alt={'Login Image'}
           objectFit={'cover'}
           src={
-            'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80'
+            'https://images.pexels.com/photos/3182755/pexels-photo-3182755.jpeg'
           }
         />
       </Flex>

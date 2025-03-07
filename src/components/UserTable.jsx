@@ -40,9 +40,11 @@ import { deleteUser } from '../api/userApi'
 import { fetchUsers } from '../actions/appActions'
 import { useAppContext } from '../context/AppContext'
 import UserDrawer from './UserDrawer'
+import { useLocation } from 'react-router-dom'
 
 const UserTable = ({ data }) => {
   const toast = useToast()
+  const location = useLocation()
   const { dispatch } = useAppContext()
   const user = JSON.parse(localStorage.getItem('user'))
 
@@ -105,7 +107,7 @@ const UserTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
-              w={{ base: '120px', md: 'auto' }}
+              w={{ base: '120px', md: '150px' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Created At</Text>
@@ -152,7 +154,7 @@ const UserTable = ({ data }) => {
                       fontSize='sm'
                       color={'red.500'}
                       onClick={handleDelete}
-                      hidden={row?.original?.username === user?.name}
+                      hidden={row?.original?._id === user?.id}
                     >
                       Delete
                     </MenuItem>
@@ -164,7 +166,7 @@ const UserTable = ({ data }) => {
         }
       }
     ],
-    [DELETE, EDIT, VIEW, user?.name]
+    [DELETE, EDIT, VIEW, user?.id]
   )
 
   // Initialize the table
@@ -239,6 +241,7 @@ const UserTable = ({ data }) => {
               colorScheme='blue'
               icon={<FaPlus />}
               onClick={handleCreate}
+              hidden={location?.pathname === '/admin/home'}
             />
           </Tooltip>
         </CardHeader>

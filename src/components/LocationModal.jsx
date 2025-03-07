@@ -60,7 +60,7 @@ const LocationModal = ({ data, isOpen, onClose }) => {
       setLoading(true)
       const assets = assetItems?.map((item) => item?.value)
       const data = await createLocations({ ...formData, assets: assets })
-      if (data?.name) {
+      if (data) {
         await fetchLocations(dispatch)
         toast({
           position: 'bottom-right',
@@ -88,7 +88,7 @@ const LocationModal = ({ data, isOpen, onClose }) => {
         ...formData,
         assets
       })
-      if (data?.name) {
+      if (data) {
         await fetchLocations(dispatch)
         toast({
           position: 'bottom-right',

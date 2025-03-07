@@ -43,7 +43,7 @@ const FeatureModal = ({ data, isOpen, onClose }) => {
     try {
       setLoading(true)
       const data = await createFeatures(formData)
-      if (data?.name) {
+      if (data) {
         await fetchFeatures(dispatch)
         toast({
           position: 'bottom-right',
@@ -66,7 +66,7 @@ const FeatureModal = ({ data, isOpen, onClose }) => {
     try {
       setLoading(true)
       const data = await updateFeatures({ id: _id, ...formData })
-      if (data?.name) {
+      if (data) {
         await fetchFeatures(dispatch)
         toast({
           position: 'bottom-right',
@@ -123,6 +123,7 @@ const FeatureModal = ({ data, isOpen, onClose }) => {
                 <FormLabel htmlFor='name'>Name</FormLabel>
                 <Input
                   name='name'
+                  maxLength={50}
                   value={formData?.name}
                   onChange={handleChange}
                 />

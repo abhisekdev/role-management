@@ -32,11 +32,11 @@ import Cookies from 'js-cookie'
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, link: '/admin/home' },
+  { name: 'Roles', icon: FiPenTool, link: '/admin/roles' },
   { name: 'Users', icon: FiUser, link: '/admin/users' },
   { name: 'Features', icon: FiTrendingUp, link: '/admin/features' },
   { name: 'Locations', icon: FiCompass, link: '/admin/locations' },
-  { name: 'Assets', icon: FiStar, link: '/admin/assets' },
-  { name: 'Roles', icon: FiPenTool, link: '/admin/roles' }
+  { name: 'Assets', icon: FiStar, link: '/admin/assets' }
 ]
 
 const SidebarContent = ({ onClose, ...rest }) => {

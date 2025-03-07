@@ -26,8 +26,7 @@ import { createAssets, updateAssets } from '../api/assetApi'
 
 const AssetModal = ({ data, isOpen, onClose }) => {
   const toast = useToast()
-  const { state, dispatch } = useAppContext()
-  const { locations } = state || {}
+  const { dispatch } = useAppContext()
 
   const { _id } = data || {}
 
@@ -35,8 +34,7 @@ const AssetModal = ({ data, isOpen, onClose }) => {
   const [error, setError] = useState(null)
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
-    locationId: ''
+    description: ''
   })
 
   const handleChange = (e) => {
@@ -48,7 +46,7 @@ const AssetModal = ({ data, isOpen, onClose }) => {
     try {
       setLoading(true)
       const data = await createAssets(formData)
-      if (data?.name) {
+      if (data) {
         await fetchAssets(dispatch)
         toast({
           position: 'bottom-right',
@@ -71,7 +69,7 @@ const AssetModal = ({ data, isOpen, onClose }) => {
     try {
       setLoading(true)
       const data = await updateAssets({ assetId: _id, ...formData })
-      if (data?.name) {
+      if (data) {
         await fetchAssets(dispatch)
         toast({
           position: 'bottom-right',
@@ -141,21 +139,6 @@ const AssetModal = ({ data, isOpen, onClose }) => {
                   value={formData?.description}
                   onChange={handleChange}
                 />
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel htmlFor='locationId'>Location</FormLabel>
-                <Select
-                  name='locationId'
-                  value={formData?.locationId}
-                  onChange={handleChange}
-                >
-                  <option value=''>-- Select --</option>
-                  {locations?.map((item) => (
-                    <option key={item?._id} value={item?._id}>
-                      {item?.name}
-                    </option>
-                  ))}
-                </Select>
               </FormControl>
             </Stack>
           </ModalBody>

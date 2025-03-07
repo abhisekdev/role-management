@@ -76,13 +76,6 @@ const AssetsTable = ({ data }) => {
         }
       },
       {
-        header: 'location',
-        accessorKey: 'location.name',
-        cell: ({ row }) => (
-          <Text w={'300px'}>{row?.original?.location?.name}</Text>
-        )
-      },
-      {
         accessorKey: 'createdAt',
         header: ({ column }) => {
           return (

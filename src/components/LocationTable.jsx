@@ -40,9 +40,11 @@ import DeleteModal from './DeleteModal'
 import { fetchLocations } from '../actions/appActions'
 import { deleteLocations } from '../api/locationApi'
 import LocationDrawer from './LocationDrawer'
+import { useLocation } from 'react-router-dom'
 
 const LocationTable = ({ data }) => {
   const toast = useToast()
+  const location = useLocation()
   const { dispatch } = useAppContext()
 
   const [sorting, setSorting] = React.useState([
@@ -231,6 +233,7 @@ const LocationTable = ({ data }) => {
               colorScheme='blue'
               icon={<FaPlus />}
               onClick={handleCreate}
+              hidden={location?.pathname === '/admin/home'}
             />
           </Tooltip>
         </CardHeader>

@@ -81,7 +81,7 @@ const RoleModal = ({ data, isOpen, onClose }) => {
         privileges,
         locations
       })
-      if (data?.name) {
+      if (data) {
         await fetchRoles(dispatch)
         toast({
           position: 'bottom-right',
@@ -113,7 +113,7 @@ const RoleModal = ({ data, isOpen, onClose }) => {
         privileges,
         locations
       })
-      if (data?.name) {
+      if (data) {
         await fetchRoles(dispatch)
         toast({
           position: 'bottom-right',
@@ -177,7 +177,12 @@ const RoleModal = ({ data, isOpen, onClose }) => {
               )}
               <FormControl isRequired>
                 <FormLabel htmlFor='name'>Name</FormLabel>
-                <Input name='name' value={name} onChange={handleChange} />
+                <Input
+                  name='name'
+                  maxLength={20}
+                  value={name}
+                  onChange={handleChange}
+                />
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor='features'>Features</FormLabel>
