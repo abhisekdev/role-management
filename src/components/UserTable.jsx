@@ -178,6 +178,10 @@ const UserTable = ({ data }) => {
     initialState: {
       pagination: {
         pageSize: 20
+      },
+      columnVisibility: {
+        email: location?.pathname === '/admin/home' ? false : true,
+        actions: location?.pathname === '/admin/home' ? false : true
       }
     },
     getCoreRowModel: getCoreRowModel(),
@@ -234,7 +238,7 @@ const UserTable = ({ data }) => {
             fontFamily={'inherit'}
             hidden={location?.pathname === '/admin/users'}
           >
-            Users
+            Recent User List
           </Heading>
           <Input
             w={'300px'}
@@ -311,6 +315,7 @@ const UserTable = ({ data }) => {
           w={'100%'}
           alignItems={'center'}
           justifyContent={'space-between'}
+          hidden={location?.pathname === '/admin/home'}
         >
           <Flex gap={2} alignItems={'center'}>
             <Button

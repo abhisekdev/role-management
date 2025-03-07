@@ -70,7 +70,7 @@ const LocationTable = ({ data }) => {
         header: 'name',
         accessorKey: 'name',
         cell: ({ getValue }) => (
-          <Text w={{ base: '200px', md: 'auto' }}>{getValue()}</Text>
+          <Text w={{ base: '200px', md: '150px' }}>{getValue()}</Text>
         )
       },
       {
@@ -84,7 +84,7 @@ const LocationTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
-              w={{ base: '120px', md: 'auto' }}
+              w={{ base: '120px', md: '150px' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Created At</Text>
@@ -101,7 +101,7 @@ const LocationTable = ({ data }) => {
             <Flex
               gap={2}
               cursor={'pointer'}
-              w={{ base: '120px', md: 'auto' }}
+              w={{ base: '120px', md: '150px' }}
               onClick={() => column.toggleSorting()}
             >
               <Text>Updated At</Text>
@@ -170,6 +170,9 @@ const LocationTable = ({ data }) => {
     initialState: {
       pagination: {
         pageSize: 20
+      },
+      columnVisibility: {
+        actions: location?.pathname === '/admin/home' ? false : true
       }
     },
     getCoreRowModel: getCoreRowModel(),
@@ -226,7 +229,7 @@ const LocationTable = ({ data }) => {
             fontFamily={'inherit'}
             hidden={location?.pathname === '/admin/locations'}
           >
-            Locations
+            Recent Location List
           </Heading>
           <Input
             w={'300px'}
@@ -303,6 +306,7 @@ const LocationTable = ({ data }) => {
           w={'100%'}
           alignItems={'center'}
           justifyContent={'space-between'}
+          hidden={location?.pathname === '/admin/home'}
         >
           <Flex gap={2} alignItems={'center'}>
             <Button
