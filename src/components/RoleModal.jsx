@@ -141,6 +141,11 @@ const RoleModal = ({ data, isOpen, onClose }) => {
     }
   }
 
+  const isDisabled =
+    featureItems?.length === 0 ||
+    privilegesItems?.length === 0 ||
+    locationItems?.length === 0
+
   useEffect(() => {
     if (data) {
       setName(data?.name)
@@ -184,7 +189,7 @@ const RoleModal = ({ data, isOpen, onClose }) => {
                   onChange={handleChange}
                 />
               </FormControl>
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor='features'>Features</FormLabel>
                 <ReactSelect
                   name='features'
@@ -202,7 +207,7 @@ const RoleModal = ({ data, isOpen, onClose }) => {
                   }}
                 />
               </FormControl>
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor='privileges'>Privileges</FormLabel>
                 <ReactSelect
                   name='privileges'
@@ -220,7 +225,7 @@ const RoleModal = ({ data, isOpen, onClose }) => {
                   }}
                 />
               </FormControl>
-              <FormControl>
+              <FormControl isRequired>
                 <FormLabel htmlFor='locations'>Locations</FormLabel>
                 <ReactSelect
                   name='locations'
@@ -245,7 +250,12 @@ const RoleModal = ({ data, isOpen, onClose }) => {
               <Button variant='ghost' onClick={onClose}>
                 Cancel
               </Button>
-              <Button type='submit' colorScheme='blue' isLoading={loading}>
+              <Button
+                type='submit'
+                colorScheme='blue'
+                isLoading={loading}
+                isDisabled={isDisabled}
+              >
                 {data ? 'Update' : 'Save'}
               </Button>
             </ButtonGroup>

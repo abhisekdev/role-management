@@ -92,15 +92,15 @@ const UserTable = ({ data }) => {
           <Text w={{ base: '200px', md: 'auto' }}>{getValue()}</Text>
         )
       },
-      {
-        header: 'Privileges',
-        accessorKey: 'role.privileges',
-        cell: ({ getValue }) => (
-          <Text w={{ base: '140px', md: 'auto' }}>
-            {getValue()?.join(', ')}
-          </Text>
-        )
-      },
+      // {
+      //   header: 'Privileges',
+      //   accessorKey: 'role.privileges',
+      //   cell: ({ getValue }) => (
+      //     <Text w={{ base: '140px', md: 'auto' }}>
+      //       {getValue()?.join(', ')}
+      //     </Text>
+      //   )
+      // },
       {
         accessorKey: 'createdAt',
         header: ({ column }) => {
