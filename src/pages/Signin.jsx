@@ -18,12 +18,11 @@ import {
 import { useState } from 'react'
 import Cookies from 'js-cookie'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { login } from '../api/authApi'
 
 const Signin = () => {
   const toast = useToast()
-  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -129,7 +128,13 @@ const Signin = () => {
               </Stack>
             </Stack>
           </form>
-          <Flex mt={4} gap={2} alignItems={'center'} justifyContent={'center'}>
+          <Flex
+            hidden
+            mt={4}
+            gap={2}
+            alignItems={'center'}
+            justifyContent={'center'}
+          >
             <Text fontSize={'sm'}>{`Don't have an account ?`}</Text>
             <Link to={`/auth/register`}>
               <Text fontSize='sm' color={'blue.500'}>
