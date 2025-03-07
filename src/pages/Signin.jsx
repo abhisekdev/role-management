@@ -20,6 +20,7 @@ import Cookies from 'js-cookie'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { login } from '../api/authApi'
+import bg from '../assets/bg.jpeg'
 
 const Signin = () => {
   const toast = useToast()
@@ -154,9 +155,7 @@ const Signin = () => {
           width={'100%'}
           alt={'Login Image'}
           objectFit={'cover'}
-          src={
-            'https://images.pexels.com/photos/3182755/pexels-photo-3182755.jpeg'
-          }
+          src={bg}
         />
       </Flex>
     </Stack>
