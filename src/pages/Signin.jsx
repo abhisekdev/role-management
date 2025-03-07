@@ -110,15 +110,13 @@ const Signin = () => {
                     value={formData?.password}
                     type={showPassword ? 'text' : 'password'}
                   />
-                  <InputRightElement h={'full'}>
-                    <Button
-                      variant={'ghost'}
-                      onClick={() =>
-                        setShowPassword((showPassword) => !showPassword)
-                      }
-                    >
-                      {showPassword ? <FaEye /> : <FaEyeSlash />}
-                    </Button>
+                  <InputRightElement
+                    cursor={'pointer'}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }
+                  >
+                    {showPassword ? <FaEye /> : <FaEyeSlash />}
                   </InputRightElement>
                 </InputGroup>
               </FormControl>
