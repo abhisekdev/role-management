@@ -13,6 +13,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Checkbox,
   Flex,
   Heading,
   IconButton,
@@ -20,7 +21,9 @@ import {
   Menu,
   MenuButton,
   MenuItem,
+  MenuItemOption,
   MenuList,
+  MenuOptionGroup,
   Portal,
   Table,
   Tbody,
@@ -33,7 +36,7 @@ import {
   useDisclosure,
   useToast
 } from '@chakra-ui/react'
-import { LuArrowUpDown } from 'react-icons/lu'
+import { LuArrowUpDown, LuCheck, LuFilter } from 'react-icons/lu'
 import { FaEllipsis, FaPlus } from 'react-icons/fa6'
 import UserModal from './UserModal'
 import DeleteModal from './DeleteModal'
@@ -46,7 +49,8 @@ import { useLocation } from 'react-router-dom'
 const UserTable = ({ data }) => {
   const toast = useToast()
   const location = useLocation()
-  const { dispatch } = useAppContext()
+  const { state, dispatch } = useAppContext()
+  const { roles } = state || {}
   const user = JSON.parse(localStorage.getItem('user'))
 
   const [sorting, setSorting] = React.useState([
@@ -59,9 +63,37 @@ const UserTable = ({ data }) => {
   const [error, setError] = React.useState(null)
   const [activeRow, setActiveRow] = React.useState(null)
   const [columnFilters, setColumnFilters] = React.useState([])
+
   const VIEW = useDisclosure()
   const EDIT = useDisclosure()
   const DELETE = useDisclosure()
+
+  const filterRoles = columnFilters.find((f) => f.id === 'role')?.value || []
+
+  console.log('columnFilters', columnFilters)
+
+  const onFilterRole = (value) => {
+    setColumnFilters((prev) => {
+      const roles = prev.find((filter) => filter?.id === 'role')?.value
+      if (!roles) {
+        return prev.concat({
+          id: 'role',
+          value: [value]
+        })
+      }
+
+      return prev.map((f) =>
+        f.id === 'role'
+          ? {
+              ...f,
+              value: filterRoles.includes(value)
+                ? roles.filter((s) => s !== value)
+                : roles.concat(value)
+            }
+          : f
+      )
+    })
+  }
 
   // Define columns for the table
   const columns = useMemo(
@@ -87,10 +119,18 @@ const UserTable = ({ data }) => {
       },
       {
         header: 'Role',
-        accessorKey: 'role.name',
+        accessorKey: 'role',
         cell: ({ getValue }) => (
-          <Text w={{ base: '200px', md: 'auto' }}>{getValue() || 'N/A'}</Text>
-        )
+          <Text w={{ base: '200px', md: 'auto' }}>
+            {getValue()?.name || 'N/A'}
+          </Text>
+        ),
+        enableColumnFilter: true,
+        filterFn: (row, columnId, filterRoles) => {
+          if (filterRoles.length === 0) return true
+          const role = row.getValue(columnId)
+          return filterRoles.includes(role?.name)
+        }
       },
       {
         header: 'Privileges',
@@ -103,24 +143,15 @@ const UserTable = ({ data }) => {
       },
       {
         accessorKey: 'createdAt',
-        header: ({ column }) => {
-          return (
-            <Flex
-              gap={2}
-              cursor={'pointer'}
-              w={{ base: '120px', md: '150px' }}
-              onClick={() => column.toggleSorting()}
-            >
-              <Text>Created At</Text>
-              <LuArrowUpDown />
-            </Flex>
-          )
-        },
-        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString()
+        header: 'Created',
+        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+        meta: {
+          align: 'right'
+        }
       },
       {
         accessorKey: 'actions',
-        header: () => <Text textAlign={'right'}>Action</Text>,
+        header: () => 'Action',
         cell: ({ row }) => {
           const handleEdit = () => {
             setActiveRow(row?.original)
@@ -164,6 +195,9 @@ const UserTable = ({ data }) => {
               </Menu>
             </Flex>
           )
+        },
+        meta: {
+          align: 'right'
         }
       }
     ],
@@ -205,7 +239,9 @@ const UserTable = ({ data }) => {
     try {
       setLoading(true)
       const data = await deleteUser(activeRow?._id)
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchUsers(dispatch)
         toast({
           position: 'bottom-right',
@@ -215,12 +251,12 @@ const UserTable = ({ data }) => {
           duration: 9000,
           isClosable: true
         })
+        DELETE.onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      DELETE.onClose()
     }
   }
 
@@ -240,15 +276,48 @@ const UserTable = ({ data }) => {
           >
             Recent User List
           </Heading>
-          <Input
-            w={{ base: '250px', md: '300px' }}
-            placeholder='Search name...'
-            hidden={location?.pathname === '/admin/home'}
-            value={table?.getColumn('username')?.getFilterValue() ?? ''}
-            onChange={(event) =>
-              table.getColumn('username')?.setFilterValue(event.target.value)
-            }
-          />
+          <Flex gap={2} alignItems={'center'}>
+            <Input
+              w={{ base: '250px', md: '300px' }}
+              placeholder='Search name...'
+              hidden={location?.pathname === '/admin/home'}
+              value={table?.getColumn('username')?.getFilterValue() ?? ''}
+              onChange={(event) =>
+                table.getColumn('username')?.setFilterValue(event.target.value)
+              }
+            />
+            <Menu closeOnSelect={false}>
+              <MenuButton
+                as={Button}
+                fontSize={'sm'}
+                colorScheme='blue'
+                fontWeight={'normal'}
+                leftIcon={<LuFilter />}
+                hidden={true}
+              >
+                Role
+              </MenuButton>
+              <Portal>
+                <MenuList minWidth='240px'>
+                  {roles?.map((item) => (
+                    <MenuItem
+                      fontSize={'sm'}
+                      key={item?._id}
+                      value={item?.name}
+                    >
+                      <Checkbox
+                        size={'sm'}
+                        isChecked={filterRoles.includes(item?.name)}
+                        onChange={() => onFilterRole(item?.name)}
+                      >
+                        {item?.name}
+                      </Checkbox>
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Portal>
+            </Menu>
+          </Flex>
           <Tooltip label='Add New User' placement='left'>
             <IconButton
               colorScheme='blue'
@@ -267,7 +336,14 @@ const UserTable = ({ data }) => {
                 <Tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <Th key={header.id} fontFamily={'inherit'}>
+                      <Th
+                        minW={'160px'}
+                        key={header.id}
+                        fontFamily={'inherit'}
+                        style={{
+                          textAlign: header?.column?.columnDef?.meta?.align
+                        }}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -288,7 +364,13 @@ const UserTable = ({ data }) => {
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} fontSize={'sm'}>
+                      <Td
+                        key={cell.id}
+                        fontSize={'sm'}
+                        style={{
+                          textAlign: cell.column.columnDef.meta?.align
+                        }}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

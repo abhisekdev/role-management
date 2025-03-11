@@ -40,13 +40,16 @@ const UserModal = ({ data, isOpen, onClose }) => {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    setError(null)
   }
 
   const handleCreate = async () => {
     try {
       setLoading(true)
       const data = await createUser(formData)
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchUsers(dispatch)
         toast({
           position: 'bottom-right',
@@ -56,12 +59,12 @@ const UserModal = ({ data, isOpen, onClose }) => {
           duration: 9000,
           isClosable: true
         })
+        onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      onClose()
     }
   }
 
@@ -69,7 +72,9 @@ const UserModal = ({ data, isOpen, onClose }) => {
     try {
       setLoading(true)
       const data = await updateUser({ userId: _id, ...formData })
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchUsers(dispatch)
         toast({
           position: 'bottom-right',
@@ -79,12 +84,12 @@ const UserModal = ({ data, isOpen, onClose }) => {
           duration: 9000,
           isClosable: true
         })
+        onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      onClose()
     }
   }
 
@@ -118,7 +123,7 @@ const UserModal = ({ data, isOpen, onClose }) => {
           <ModalBody>
             <Stack spacing={4}>
               {error && (
-                <Alert status='error'>
+                <Alert status='error' fontSize={'sm'}>
                   <AlertIcon />
                   {error}
                 </Alert>

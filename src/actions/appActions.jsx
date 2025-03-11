@@ -3,6 +3,13 @@ import { getFeatures } from '../api/featureApi'
 import { getLocations } from '../api/locationApi'
 import { getRoles } from '../api/roleApi'
 import { getUsers } from '../api/userApi'
+import Cookies from 'js-cookie'
+
+export const handleLogout = () => {
+  Cookies.remove('token')
+  localStorage.clear()
+  window.location.href = '/auth/login'
+}
 
 export const fetchUsers = async (dispatch) => {
   dispatch({ type: 'SET_LOADING' })

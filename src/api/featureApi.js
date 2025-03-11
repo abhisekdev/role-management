@@ -28,8 +28,7 @@ export const createFeatures = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error creating features:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -43,8 +42,7 @@ export const updateFeatures = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error updating features:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -58,7 +56,6 @@ export const deleteFeatures = async (userId) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error deleting features:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }

@@ -36,9 +36,9 @@ const LocationModal = ({ data, isOpen, onClose }) => {
   const [error, setError] = useState(null)
   const [assetItems, setAssetItems] = useState([])
   const [formData, setFormData] = useState({
-    name: '',
-    level: '',
-    parentId: ''
+    name: null,
+    level: null,
+    parentId: null
   })
 
   const assetOptions = assets?.map((item) => ({
@@ -48,11 +48,13 @@ const LocationModal = ({ data, isOpen, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    setFormData((prev) => ({ ...prev, [name]: value || null }))
+    setError(null)
   }
 
   const onSelectAsset = (value) => {
     setAssetItems(value)
+    setError(null)
   }
 
   const handleCreate = async () => {
@@ -60,7 +62,9 @@ const LocationModal = ({ data, isOpen, onClose }) => {
       setLoading(true)
       const assets = assetItems?.map((item) => item?.value)
       const data = await createLocations({ ...formData, assets: assets })
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchLocations(dispatch)
         toast({
           position: 'bottom-right',
@@ -70,12 +74,12 @@ const LocationModal = ({ data, isOpen, onClose }) => {
           duration: 9000,
           isClosable: true
         })
+        onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      onClose()
     }
   }
 
@@ -88,7 +92,9 @@ const LocationModal = ({ data, isOpen, onClose }) => {
         ...formData,
         assets
       })
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchLocations(dispatch)
         toast({
           position: 'bottom-right',
@@ -98,12 +104,12 @@ const LocationModal = ({ data, isOpen, onClose }) => {
           duration: 9000,
           isClosable: true
         })
+        onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      onClose()
     }
   }
 
@@ -142,7 +148,7 @@ const LocationModal = ({ data, isOpen, onClose }) => {
           <ModalBody>
             <Stack spacing={4}>
               {error && (
-                <Alert status='error'>
+                <Alert status='error' fontSize={'sm'}>
                   <AlertIcon />
                   {error}
                 </Alert>

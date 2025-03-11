@@ -12,16 +12,8 @@ import {
   StatNumber,
   useColorModeValue
 } from '@chakra-ui/react'
-import { useEffect } from 'react'
 import { FaBoxOpen, FaBurn, FaUsers, FaMap } from 'react-icons/fa'
 
-import {
-  fetchAssets,
-  fetchFeatures,
-  fetchLocations,
-  fetchRoles,
-  fetchUsers
-} from '../actions/appActions'
 import { useAppContext } from '../context/AppContext'
 import { Link } from 'react-router-dom'
 
@@ -101,16 +93,8 @@ const StatsCard = (props) => {
 }
 
 const HomePage = () => {
-  const { state, dispatch } = useAppContext()
+  const { state } = useAppContext()
   const { users, features, locations, assets, loading, error } = state
-
-  useEffect(() => {
-    fetchUsers(dispatch)
-    fetchFeatures(dispatch)
-    fetchLocations(dispatch)
-    fetchAssets(dispatch)
-    fetchRoles(dispatch)
-  }, [dispatch])
 
   if (loading)
     return (

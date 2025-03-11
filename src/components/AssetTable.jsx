@@ -68,7 +68,7 @@ const AssetsTable = ({ data }) => {
         accessorKey: 'name',
         cell: ({ row }) => {
           return (
-            <Stack w={{ base: '400px', md: 'auto' }}>
+            <Stack spacing={1}>
               <Text>{row?.original?.name}</Text>
               <Text color={'gray.500'}>{row?.original?.description}</Text>
             </Stack>
@@ -77,43 +77,23 @@ const AssetsTable = ({ data }) => {
       },
       {
         accessorKey: 'createdAt',
-        header: ({ column }) => {
-          return (
-            <Flex
-              gap={2}
-              cursor={'pointer'}
-              onClick={() => column.toggleSorting()}
-            >
-              <Text>Created At</Text>
-              <LuArrowUpDown />
-            </Flex>
-          )
-        },
-        cell: ({ getValue }) => (
-          <Text w={'200px'}>{new Date(getValue()).toLocaleDateString()}</Text>
-        )
+        header: 'Created',
+        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+        meta: {
+          align: 'right'
+        }
       },
       {
         accessorKey: 'updatedAt',
-        header: ({ column }) => {
-          return (
-            <Flex
-              gap={2}
-              cursor={'pointer'}
-              onClick={() => column.toggleSorting()}
-            >
-              <Text>Updated At</Text>
-              <LuArrowUpDown />
-            </Flex>
-          )
-        },
-        cell: ({ getValue }) => (
-          <Text w={'200px'}>{new Date(getValue()).toLocaleDateString()}</Text>
-        )
+        header: 'Updated',
+        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+        meta: {
+          align: 'right'
+        }
       },
       {
         accessorKey: 'actions',
-        header: () => <Text textAlign={'right'}>Action</Text>,
+        header: () => 'Action',
         cell: ({ row }) => {
           const handleEdit = () => {
             setActiveRow(row?.original)
@@ -156,6 +136,9 @@ const AssetsTable = ({ data }) => {
               </Menu>
             </Flex>
           )
+        },
+        meta: {
+          align: 'right'
         }
       }
     ],
@@ -193,7 +176,9 @@ const AssetsTable = ({ data }) => {
     try {
       setLoading(true)
       const data = await deleteAssets(activeRow?._id)
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchAssets(dispatch)
         toast({
           position: 'bottom-right',
@@ -203,12 +188,12 @@ const AssetsTable = ({ data }) => {
           duration: 9000,
           isClosable: true
         })
+        DELETE.onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      DELETE.onClose()
     }
   }
 
@@ -246,7 +231,12 @@ const AssetsTable = ({ data }) => {
                 <Tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <Th key={header.id} fontFamily={'inherit'}>
+                      <Th
+                        minW={'200px'}
+                        key={header.id}
+                        fontFamily={'inherit'}
+                        textAlign={header?.column?.columnDef?.meta?.align}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -267,7 +257,11 @@ const AssetsTable = ({ data }) => {
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} fontSize={'sm'}>
+                      <Td
+                        key={cell.id}
+                        fontSize={'sm'}
+                        textAlign={cell?.column?.columnDef?.meta?.align}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

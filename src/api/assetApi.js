@@ -28,8 +28,7 @@ export const createAssets = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error creating assets:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -43,8 +42,7 @@ export const updateAssets = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error updating assets:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -58,7 +56,6 @@ export const deleteAssets = async (userId) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error deleting assets:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }

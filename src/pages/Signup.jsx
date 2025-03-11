@@ -17,12 +17,12 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { register } from '../api/authApi'
+import bg from '../assets/bg.jpeg'
 
 const Signup = () => {
   const toast = useToast()
-  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -63,13 +63,12 @@ const Signup = () => {
 
   return (
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
-      <Flex flex={1} display={{ base: 'none', md: 'flex' }}>
+      <Flex flex={1} h={'100vh'} display={{ base: 'none', md: 'flex' }}>
         <Image
+          src={bg}
+          width={'100%'}
           alt={'Login Image'}
           objectFit={'cover'}
-          src={
-            'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80'
-          }
         />
       </Flex>
       <Flex p={8} flex={1} align={'center'} justify={'center'}>

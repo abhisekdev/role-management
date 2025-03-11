@@ -28,7 +28,7 @@ import {
   FiPenTool
 } from 'react-icons/fi'
 import { Link, useLocation } from 'react-router-dom'
-import Cookies from 'js-cookie'
+import { handleLogout } from '../actions/appActions'
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, link: '/admin/home' },
@@ -103,12 +103,6 @@ const NavItem = ({ icon, onClose, link, children, ...rest }) => {
 
 const MobileNav = ({ onOpen, ...rest }) => {
   const user = JSON.parse(localStorage.getItem('user'))
-
-  const handleLogout = () => {
-    Cookies.remove('token')
-    localStorage.clear()
-    window.location.href = '/auth/login'
-  }
 
   return (
     <Flex

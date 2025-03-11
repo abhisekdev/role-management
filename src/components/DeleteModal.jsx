@@ -29,7 +29,7 @@ const DeleteModal = ({
         <ModalBody>
           <Stack>
             {error && (
-              <Alert status='error'>
+              <Alert status='error' fontSize={'sm'}>
                 <AlertIcon />
                 {error}
               </Alert>

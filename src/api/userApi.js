@@ -1,3 +1,4 @@
+import { handleLogout } from '../actions/appActions'
 import axiosInstance from './axios'
 import Cookies from 'js-cookie'
 
@@ -14,7 +15,7 @@ export const getUsers = async () => {
     return response.data
   } catch (error) {
     console.error('Error fetching users:', error)
-    throw error
+    handleLogout()
   }
 }
 
@@ -43,8 +44,7 @@ export const createUser = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error creating user:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -58,8 +58,7 @@ export const updateUser = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error updating user:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -73,7 +72,6 @@ export const deleteUser = async (userId) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error deleting user:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }

@@ -43,8 +43,7 @@ export const createLocations = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error creating locations:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -58,8 +57,7 @@ export const updateLocations = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error updating locations:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -73,7 +71,6 @@ export const deleteLocations = async (userId) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error deleting locations:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }

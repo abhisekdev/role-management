@@ -43,8 +43,7 @@ export const createRoles = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error creating roles:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -58,8 +57,7 @@ export const updateRoles = async (userData) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error updating roles:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }
 
@@ -73,7 +71,6 @@ export const deleteRoles = async (userId) => {
     })
     return response.data
   } catch (error) {
-    console.error('Error deleting roles:', error)
-    throw error
+    return { status: error?.status, message: error.response?.data?.message }
   }
 }

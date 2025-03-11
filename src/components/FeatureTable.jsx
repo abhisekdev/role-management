@@ -77,45 +77,27 @@ const FeatureTable = ({ data }) => {
       },
       {
         accessorKey: 'createdAt',
-        header: ({ column }) => {
-          return (
-            <Flex
-              gap={2}
-              cursor={'pointer'}
-              w={{ base: '150px', md: 'auto' }}
-              onClick={() => column.toggleSorting()}
-            >
-              <Text>Created At</Text>
-              <LuArrowUpDown />
-            </Flex>
-          )
-        },
+        header: 'Created',
         cell: ({ getValue }) => (
           <Text>{new Date(getValue()).toLocaleDateString()}</Text>
-        )
+        ),
+        meta: {
+          align: 'right'
+        }
       },
       {
         accessorKey: 'updatedAt',
-        header: ({ column }) => {
-          return (
-            <Flex
-              gap={2}
-              cursor={'pointer'}
-              w={{ base: '150px', md: 'auto' }}
-              onClick={() => column.toggleSorting()}
-            >
-              <Text>Updated At</Text>
-              <LuArrowUpDown />
-            </Flex>
-          )
-        },
+        header: 'Updated',
         cell: ({ getValue }) => (
           <Text>{new Date(getValue()).toLocaleDateString()}</Text>
-        )
+        ),
+        meta: {
+          align: 'right'
+        }
       },
       {
         accessorKey: 'actions',
-        header: () => <Text textAlign={'right'}>Action</Text>,
+        header: () => 'Action',
         cell: ({ row }) => {
           const handleEdit = () => {
             setActiveRow(row?.original)
@@ -158,6 +140,9 @@ const FeatureTable = ({ data }) => {
               </Menu>
             </Flex>
           )
+        },
+        meta: {
+          align: 'right'
         }
       }
     ],
@@ -195,7 +180,9 @@ const FeatureTable = ({ data }) => {
     try {
       setLoading(true)
       const data = await deleteFeatures(activeRow?._id)
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchFeatures(dispatch)
         toast({
           position: 'bottom-right',
@@ -205,12 +192,12 @@ const FeatureTable = ({ data }) => {
           duration: 9000,
           isClosable: true
         })
+        DELETE.onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      DELETE.onClose()
     }
   }
 
@@ -248,7 +235,12 @@ const FeatureTable = ({ data }) => {
                 <Tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <Th key={header.id} fontFamily={'inherit'}>
+                      <Th
+                        key={header.id}
+                        minW={'200px'}
+                        fontFamily={'inherit'}
+                        textAlign={header?.column?.columnDef?.meta?.align}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -269,7 +261,11 @@ const FeatureTable = ({ data }) => {
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} fontSize={'sm'}>
+                      <Td
+                        key={cell.id}
+                        fontSize={'sm'}
+                        textAlign={cell?.column?.columnDef?.meta?.align}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

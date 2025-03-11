@@ -74,43 +74,23 @@ const RoleTable = ({ data }) => {
       },
       {
         accessorKey: 'createdAt',
-        header: ({ column }) => {
-          return (
-            <Flex
-              gap={2}
-              cursor={'pointer'}
-              w={{ base: '120px', md: 'auto' }}
-              onClick={() => column.toggleSorting()}
-            >
-              <Text>Created At</Text>
-              <LuArrowUpDown />
-            </Flex>
-          )
-        },
-        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString()
+        header: 'Created',
+        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+        meta: {
+          align: 'right'
+        }
       },
       {
         accessorKey: 'updatedAt',
-        header: ({ column }) => {
-          return (
-            <Flex
-              gap={2}
-              cursor={'pointer'}
-              w={{ base: '120px', md: 'auto' }}
-              onClick={() => column.toggleSorting()}
-            >
-              <Text>Updated At</Text>
-              <LuArrowUpDown />
-            </Flex>
-          )
-        },
-        cell: ({ getValue }) => (
-          <Text w={'200px'}>{new Date(getValue()).toLocaleDateString()}</Text>
-        )
+        header: 'Updated',
+        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+        meta: {
+          align: 'right'
+        }
       },
       {
         accessorKey: 'actions',
-        header: () => <Text textAlign={'right'}>Action</Text>,
+        header: () => 'Action',
         cell: ({ row }) => {
           const handleEdit = () => {
             setActiveRow(row?.original)
@@ -153,6 +133,9 @@ const RoleTable = ({ data }) => {
               </Menu>
             </Flex>
           )
+        },
+        meta: {
+          align: 'right'
         }
       }
     ],
@@ -190,7 +173,9 @@ const RoleTable = ({ data }) => {
     try {
       setLoading(true)
       const data = await deleteRoles(activeRow?._id)
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchRoles(dispatch)
         toast({
           position: 'bottom-right',
@@ -200,12 +185,12 @@ const RoleTable = ({ data }) => {
           duration: 9000,
           isClosable: true
         })
+        DELETE.onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      DELETE.onClose()
     }
   }
 
@@ -237,13 +222,18 @@ const RoleTable = ({ data }) => {
 
         {/* Table */}
         <CardBody overflowX={{ base: 'scroll', md: 'auto' }}>
-          <Table>
+          <Table w={'100%'}>
             <Thead>
               {table.getHeaderGroups().map((headerGroup) => (
                 <Tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <Th key={header.id} fontFamily={'inherit'}>
+                      <Th
+                        key={header.id}
+                        fontFamily={'inherit'}
+                        minW={'200px'}
+                        textAlign={header?.column?.columnDef?.meta?.align}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -264,7 +254,11 @@ const RoleTable = ({ data }) => {
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} fontSize={'sm'}>
+                      <Td
+                        key={cell.id}
+                        fontSize={'sm'}
+                        textAlign={cell?.column?.columnDef?.meta?.align}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

@@ -69,9 +69,7 @@ const LocationTable = ({ data }) => {
       {
         header: 'name',
         accessorKey: 'name',
-        cell: ({ getValue }) => (
-          <Text w={{ base: '200px', md: '150px' }}>{getValue()}</Text>
-        )
+        cell: ({ getValue }) => getValue()
       },
       {
         header: 'level',
@@ -79,41 +77,23 @@ const LocationTable = ({ data }) => {
       },
       {
         accessorKey: 'createdAt',
-        header: ({ column }) => {
-          return (
-            <Flex
-              gap={2}
-              cursor={'pointer'}
-              w={{ base: '120px', md: '150px' }}
-              onClick={() => column.toggleSorting()}
-            >
-              <Text>Created At</Text>
-              <LuArrowUpDown />
-            </Flex>
-          )
-        },
-        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString()
+        header: 'Created',
+        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+        meta: {
+          align: 'right'
+        }
       },
       {
         accessorKey: 'updatedAt',
-        header: ({ column }) => {
-          return (
-            <Flex
-              gap={2}
-              cursor={'pointer'}
-              w={{ base: '120px', md: '150px' }}
-              onClick={() => column.toggleSorting()}
-            >
-              <Text>Updated At</Text>
-              <LuArrowUpDown />
-            </Flex>
-          )
-        },
-        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString()
+        header: 'Updated',
+        cell: ({ getValue }) => new Date(getValue()).toLocaleDateString(),
+        meta: {
+          align: 'right'
+        }
       },
       {
         accessorKey: 'actions',
-        header: () => <Text textAlign={'right'}>Action</Text>,
+        header: () => 'Action',
         cell: ({ row }) => {
           const handleEdit = () => {
             setActiveRow(row?.original)
@@ -156,6 +136,9 @@ const LocationTable = ({ data }) => {
               </Menu>
             </Flex>
           )
+        },
+        meta: {
+          align: 'right'
         }
       }
     ],
@@ -196,7 +179,9 @@ const LocationTable = ({ data }) => {
     try {
       setLoading(true)
       const data = await deleteLocations(activeRow?._id)
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchLocations(dispatch)
         toast({
           position: 'bottom-right',
@@ -206,12 +191,12 @@ const LocationTable = ({ data }) => {
           duration: 9000,
           isClosable: true
         })
+        DELETE.onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      DELETE.onClose()
     }
   }
 
@@ -258,7 +243,12 @@ const LocationTable = ({ data }) => {
                 <Tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <Th key={header.id} fontFamily={'inherit'}>
+                      <Th
+                        minW={'160'}
+                        key={header.id}
+                        fontFamily={'inherit'}
+                        textAlign={header?.column?.columnDef?.meta?.align}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -279,7 +269,11 @@ const LocationTable = ({ data }) => {
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <Td key={cell.id} fontSize={'sm'}>
+                      <Td
+                        key={cell.id}
+                        fontSize={'sm'}
+                        textAlign={cell?.column?.columnDef?.meta?.align}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

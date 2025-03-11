@@ -37,13 +37,16 @@ const FeatureModal = ({ data, isOpen, onClose }) => {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    setError(null)
   }
 
   const handleCreate = async () => {
     try {
       setLoading(true)
       const data = await createFeatures(formData)
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchFeatures(dispatch)
         toast({
           position: 'bottom-right',
@@ -53,12 +56,12 @@ const FeatureModal = ({ data, isOpen, onClose }) => {
           duration: 9000,
           isClosable: true
         })
+        onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      onClose()
     }
   }
 
@@ -66,7 +69,9 @@ const FeatureModal = ({ data, isOpen, onClose }) => {
     try {
       setLoading(true)
       const data = await updateFeatures({ id: _id, ...formData })
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchFeatures(dispatch)
         toast({
           position: 'bottom-right',
@@ -76,12 +81,12 @@ const FeatureModal = ({ data, isOpen, onClose }) => {
           duration: 9000,
           isClosable: true
         })
+        onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      onClose()
     }
   }
 
@@ -114,7 +119,7 @@ const FeatureModal = ({ data, isOpen, onClose }) => {
           <ModalBody>
             <Stack spacing={4}>
               {error && (
-                <Alert status='error'>
+                <Alert status='error' fontSize={'sm'}>
                   <AlertIcon />
                   {error}
                 </Alert>

@@ -54,19 +54,22 @@ const RoleModal = ({ data, isOpen, onClose }) => {
 
   const handleChange = (e) => {
     setName(e.target.value)
-    setError('')
+    setError(null)
   }
 
   const onSelectFeature = (value) => {
     setFeatureItems(value)
+    setError(null)
   }
 
   const onSelectPrevilege = (value) => {
     setPrivilegesItems(value)
+    setError(null)
   }
 
   const onSelectLocation = (value) => {
     setLocationItems(value)
+    setError(null)
   }
 
   const handleCreate = async () => {
@@ -81,7 +84,9 @@ const RoleModal = ({ data, isOpen, onClose }) => {
         privileges,
         locations
       })
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchRoles(dispatch)
         toast({
           position: 'bottom-right',
@@ -91,12 +96,12 @@ const RoleModal = ({ data, isOpen, onClose }) => {
           duration: 9000,
           isClosable: true
         })
+        onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      onClose()
     }
   }
 
@@ -113,7 +118,9 @@ const RoleModal = ({ data, isOpen, onClose }) => {
         privileges,
         locations
       })
-      if (data) {
+      if (data?.message) {
+        setError(data?.message)
+      } else {
         await fetchRoles(dispatch)
         toast({
           position: 'bottom-right',
@@ -123,12 +130,12 @@ const RoleModal = ({ data, isOpen, onClose }) => {
           duration: 9000,
           isClosable: true
         })
+        onClose()
       }
     } catch (error) {
       setError(error.message)
     } finally {
       setLoading(false)
-      onClose()
     }
   }
 
@@ -175,7 +182,7 @@ const RoleModal = ({ data, isOpen, onClose }) => {
           <ModalBody>
             <Stack spacing={4}>
               {error && (
-                <Alert status='error'>
+                <Alert status='error' fontSize={'sm'}>
                   <AlertIcon />
                   {error}
                 </Alert>
