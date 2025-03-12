@@ -144,6 +144,8 @@ const LocationModal = ({ data, isOpen, onClose }) => {
         data?.assets?.find((asset) => asset === item?.value)
       )
       setAssetItems(filterAssets)
+    } else {
+      setLocations(state?.locations)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
