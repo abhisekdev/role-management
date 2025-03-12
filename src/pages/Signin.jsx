@@ -47,7 +47,9 @@ const Signin = () => {
         email: formData?.email,
         password: formData?.password
       })
-      if (data?.token) {
+      if (data?.message) {
+        setError(data?.message)
+      } else if (data?.token) {
         Cookies.set('token', data?.token, { expires: 7 })
         localStorage.setItem('user', JSON.stringify(data?.user))
         toast({
@@ -78,7 +80,7 @@ const Signin = () => {
           <form onSubmit={handleSubmit}>
             <Stack spacing={4} w={'100%'}>
               {error && (
-                <Alert status='error'>
+                <Alert status='error' fontSize={'sm'}>
                   <AlertIcon />
                   {error}
                 </Alert>
@@ -99,6 +101,7 @@ const Signin = () => {
                   name='email'
                   value={formData?.email}
                   onChange={handleChange}
+                  placeholder='abc@example.com'
                 />
               </FormControl>
               <FormControl id='password' isRequired>
@@ -106,6 +109,7 @@ const Signin = () => {
                 <InputGroup>
                   <Input
                     name='password'
+                    placeholder='*******'
                     onChange={handleChange}
                     value={formData?.password}
                     type={showPassword ? 'text' : 'password'}

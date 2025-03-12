@@ -90,6 +90,7 @@ const Signup = () => {
                   name='username'
                   value={formData?.username}
                   onChange={handleChange}
+                  placeholder='anikanaik'
                 />
               </FormControl>
               <FormControl id='email' isRequired>
@@ -99,6 +100,7 @@ const Signup = () => {
                   name='email'
                   value={formData?.email}
                   onChange={handleChange}
+                  placeholder='abc@example.com'
                 />
               </FormControl>
               <FormControl id='password' isRequired>
@@ -108,6 +110,7 @@ const Signup = () => {
                     name='password'
                     onChange={handleChange}
                     value={formData?.password}
+                    placeholder='**********'
                     type={showPassword ? 'text' : 'password'}
                   />
                   <InputRightElement h={'full'}>

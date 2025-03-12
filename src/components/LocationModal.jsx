@@ -22,18 +22,23 @@ import { fetchLocations } from '../actions/appActions'
 import { useAppContext } from '../context/AppContext'
 import ReactSelect from 'react-select'
 import { useSelect } from '../hooks/useSelect'
-import { createLocations, updateLocations } from '../api/locationApi'
+import {
+  createLocations,
+  getParentLocations,
+  updateLocations
+} from '../api/locationApi'
 
 const LocationModal = ({ data, isOpen, onClose }) => {
   const toast = useToast()
   const { style } = useSelect()
   const { state, dispatch } = useAppContext()
-  const { locations, assets } = state || {}
+  const { assets } = state || {}
 
   const { _id } = data || {}
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [locations, setLocations] = useState([])
   const [assetItems, setAssetItems] = useState([])
   const [formData, setFormData] = useState({
     name: null,
@@ -124,6 +129,11 @@ const LocationModal = ({ data, isOpen, onClose }) => {
 
   useEffect(() => {
     if (data) {
+      const fetchParentLocations = async () => {
+        const res = await getParentLocations(data?._id)
+        res && setLocations(res)
+      }
+      fetchParentLocations()
       setFormData((prev) => ({
         ...prev,
         name: data?.name,

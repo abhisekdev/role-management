@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 
 const token = Cookies.get('token')
 
-// Fetch all users
+// Fetch all locations
 export const getLocations = async () => {
   try {
     const response = await axiosInstance.get('/locations', {
@@ -18,7 +18,25 @@ export const getLocations = async () => {
   }
 }
 
-// Fetch single users
+// Fetch all parent locations
+export const getParentLocations = async (locationId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/locations/getviableparentlocations/${locationId}`,
+      {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : ''
+        }
+      }
+    )
+    return response.data
+  } catch (error) {
+    console.error('Error fetching locations:', error)
+    throw error
+  }
+}
+
+// Fetch single location
 export const getLocation = async (locationId) => {
   try {
     const response = await axiosInstance.get(`/locations/${locationId}`, {
@@ -33,7 +51,7 @@ export const getLocation = async (locationId) => {
   }
 }
 
-// Create a new user
+// Create a new location
 export const createLocations = async (userData) => {
   try {
     const response = await axiosInstance.post('/locations', userData, {
@@ -47,7 +65,7 @@ export const createLocations = async (userData) => {
   }
 }
 
-// Update a user
+// Update a location
 export const updateLocations = async (userData) => {
   try {
     const response = await axiosInstance.put(`/locations`, userData, {
@@ -61,7 +79,7 @@ export const updateLocations = async (userData) => {
   }
 }
 
-// Delete a user
+// Delete a location
 export const deleteLocations = async (userId) => {
   try {
     const response = await axiosInstance.delete(`/locations/${userId}`, {
