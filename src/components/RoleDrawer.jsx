@@ -116,21 +116,43 @@ const RoleDrawer = ({ data, isOpen, onClose, ref }) => {
                 </TabList>
                 <TabPanels>
                   <TabPanel>
-                    <Tag size={'sm'} colorScheme='orange'>
-                      {role?.privileges?.join(', ') || 'N/A'}
-                    </Tag>
+                    {role?.privileges?.length > 0 ? (
+                      <Flex gap={2} alignItems={'center'}>
+                        {role?.privileges?.map((item, index) => (
+                          <Tag key={index} size={'sm'} colorScheme='orange'>
+                            {item}
+                          </Tag>
+                        ))}
+                      </Flex>
+                    ) : (
+                      <Text fontSize={'sm'}>Not available</Text>
+                    )}
                   </TabPanel>
                   <TabPanel>
-                    <Tag size={'sm'} colorScheme='teal'>
-                      {role?.features?.map((item) => item?.name)?.join(', ') ||
-                        'N/A'}
-                    </Tag>
+                    {role?.features?.length > 0 ? (
+                      <Flex gap={2} alignItems={'center'}>
+                        {role?.features?.map((item, index) => (
+                          <Tag key={index} size={'sm'} colorScheme='teal'>
+                            {item?.name}
+                          </Tag>
+                        ))}
+                      </Flex>
+                    ) : (
+                      <Text fontSize={'sm'}>Not available</Text>
+                    )}
                   </TabPanel>
                   <TabPanel>
-                    <Tag size={'sm'} colorScheme='green'>
-                      {role?.locations?.map((item) => item?.name)?.join(', ') ||
-                        'N/A'}
-                    </Tag>
+                    {role?.locations?.length > 0 ? (
+                      <Flex gap={2} alignItems={'center'}>
+                        {role?.locations?.map((item, index) => (
+                          <Tag key={index} size={'sm'} colorScheme='green'>
+                            {item?.name}
+                          </Tag>
+                        ))}
+                      </Flex>
+                    ) : (
+                      <Text fontSize={'sm'}>Not available</Text>
+                    )}
                   </TabPanel>
                 </TabPanels>
               </Tabs>
