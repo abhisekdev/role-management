@@ -156,7 +156,7 @@ const UserDrawer = ({ data, isOpen, onClose, ref }) => {
                       <Flex gap={2} alignItems={'center'}>
                         {user?.role?.locations?.map((item, index) => (
                           <Tag key={index} size={'sm'} colorScheme='green'>
-                            {item}
+                            {item?.name}
                           </Tag>
                         ))}
                       </Flex>
