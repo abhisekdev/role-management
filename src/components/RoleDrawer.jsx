@@ -8,24 +8,36 @@ import {
   Text,
   Stack,
   Alert,
-  AlertIcon
+  AlertIcon,
+  Flex,
+  Divider,
+  Tag,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { getRole } from '../api/roleApi'
 
 const RoleDrawer = ({ data, isOpen, onClose, ref }) => {
-  const { _id, name } = data || {}
+  const { _id, name, createdAt } = data || {}
 
   const [role, setRole] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const ListItem = ({ label, value }) => {
+  const Container = ({ children }) => {
     return (
-      <Stack spacing={0}>
-        <Text fontWeight={'medium'}>{label}</Text>
-        <Text color={'gray.800'}>{value?.join(', ') || 'Not available'}</Text>
-      </Stack>
+      <Flex
+        gap={2}
+        fontSize={'sm'}
+        flexWrap={'wrap'}
+        justifyContent={'space-between'}
+      >
+        {children}
+      </Flex>
     )
   }
 
@@ -61,7 +73,7 @@ const RoleDrawer = ({ data, isOpen, onClose, ref }) => {
       <DrawerContent>
         <DrawerCloseButton mt={1} />
         <DrawerHeader fontSize={'md'} borderBottom={'1px solid lightgray'}>
-          {name}
+          Role
         </DrawerHeader>
         <DrawerBody>
           {error && (
@@ -73,16 +85,55 @@ const RoleDrawer = ({ data, isOpen, onClose, ref }) => {
           {loading ? (
             <Text mt={2}>Loading...</Text>
           ) : (
-            <Stack mt={2} spacing={5}>
-              <ListItem label={'Privileges'} value={role?.privileges} />
-              <ListItem
-                label={'Features'}
-                value={role?.features?.map((item) => item?.name)}
-              />
-              <ListItem
-                label={'Locations'}
-                value={role?.locations?.map((item) => item?.name)}
-              />
+            <Stack mt={2} spacing={6}>
+              <Stack spacing={2}>
+                <Container>
+                  <Text>Name:</Text>
+                  <Text color={'gray.500'}>{name}</Text>
+                </Container>
+                <Divider />
+                <Container>
+                  <Text>Role ID:</Text>
+                  <Text color={'gray.500'}>{_id}</Text>
+                </Container>
+                <Divider />
+                <Container>
+                  <Text>Created:</Text>
+                  <Text color={'gray.500'}>
+                    {new Date(createdAt).toLocaleDateString()}
+                  </Text>
+                </Container>
+              </Stack>
+              <Tabs variant='enclosed'>
+                <TabList>
+                  {['Privileges', 'Features', 'Locations']?.map(
+                    (item, index) => (
+                      <Tab key={index} fontSize={'sm'}>
+                        {item}
+                      </Tab>
+                    )
+                  )}
+                </TabList>
+                <TabPanels>
+                  <TabPanel>
+                    <Tag size={'sm'} colorScheme='orange'>
+                      {role?.privileges?.join(', ') || 'N/A'}
+                    </Tag>
+                  </TabPanel>
+                  <TabPanel>
+                    <Tag size={'sm'} colorScheme='teal'>
+                      {role?.features?.map((item) => item?.name)?.join(', ') ||
+                        'N/A'}
+                    </Tag>
+                  </TabPanel>
+                  <TabPanel>
+                    <Tag size={'sm'} colorScheme='green'>
+                      {role?.locations?.map((item) => item?.name)?.join(', ') ||
+                        'N/A'}
+                    </Tag>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
             </Stack>
           )}
         </DrawerBody>

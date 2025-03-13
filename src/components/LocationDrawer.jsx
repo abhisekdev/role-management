@@ -7,47 +7,13 @@ import {
   DrawerCloseButton,
   Text,
   Stack,
-  Alert,
-  AlertIcon
+  Flex,
+  Tag,
+  Box
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { getLocation } from '../api/locationApi'
 
 const LocationDrawer = ({ data, isOpen, onClose, ref }) => {
-  const { _id, name } = data || {}
-
-  const [location, setLocation] = useState(null)
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
-
-  const ListItem = ({ label, value }) => {
-    return (
-      <Stack spacing={0}>
-        <Text fontWeight={'medium'}>{label}</Text>
-        <Text color={'gray.800'}>{value?.join(', ') || 'Not available'}</Text>
-      </Stack>
-    )
-  }
-
-  useEffect(() => {
-    if (_id && isOpen) {
-      const fetchLocation = async () => {
-        try {
-          setLoading(true)
-          const result = await getLocation(_id)
-          if (result) {
-            setLocation(result)
-          }
-        } catch (error) {
-          setError(error.message)
-        } finally {
-          setLoading(false)
-        }
-      }
-
-      fetchLocation()
-    }
-  }, [_id, isOpen])
+  const { _id, name, level, children } = data || {}
 
   return (
     <Drawer
@@ -61,33 +27,58 @@ const LocationDrawer = ({ data, isOpen, onClose, ref }) => {
       <DrawerContent>
         <DrawerCloseButton mt={1} />
         <DrawerHeader fontSize={'md'} borderBottom={'1px solid lightgray'}>
-          {name}
+          Location
         </DrawerHeader>
         <DrawerBody>
-          {error && (
-            <Alert status='error'>
-              <AlertIcon />
-              {error}
-            </Alert>
-          )}
-          {loading ? (
-            <Text mt={2}>Loading...</Text>
-          ) : (
-            <Stack mt={2} spacing={5}>
-              <ListItem
-                label={'Assets'}
-                value={location?.overalldata?.assetsArray}
-              />
-              <ListItem
-                label={'Levels'}
-                value={location?.overalldata?.levelunder}
-              />
-              <ListItem
-                label={'Connections'}
-                value={location?.overalldata?.childrenArray}
-              />
+          <Stack mt={2} spacing={5}>
+            <Stack spacing={1}>
+              <Text>{name}</Text>
+              <Flex gap={2} alignItems={'center'}>
+                <Tag size={'sm'} colorScheme='blue'>
+                  Level {level}
+                </Tag>
+                <Text fontSize={'sm'} color={'gray.500'}>
+                  {_id}
+                </Text>
+              </Flex>
             </Stack>
-          )}
+            <Stack spacing={1}>
+              <Text fontWeight='medium'>Child locations:</Text>
+              {children?.length > 0 ? (
+                <Stack spacing={0}>
+                  {children?.map((item) => (
+                    <Stack
+                      spacing={1}
+                      pl={6}
+                      py={2}
+                      pos={'relative'}
+                      key={item?._id}
+                      fontSize={'sm'}
+                      borderLeft={'1px solid #CBD5E0'}
+                    >
+                      <Box
+                        pos={'absolute'}
+                        top={'50%'}
+                        left={'0'}
+                        w={'15px'}
+                        h={'1px'}
+                        bg={'gray.300'}
+                      />
+                      <Text>{item?.name}</Text>
+                      <Flex gap={2} alignItems={'center'}>
+                        <Tag size={'sm'} colorScheme='blue'>
+                          Level {item?.level}
+                        </Tag>
+                        <Tag size={'sm'}>{item?.assets?.length} Asset</Tag>
+                      </Flex>
+                    </Stack>
+                  ))}
+                </Stack>
+              ) : (
+                <Text color={'gray.500'}>Not available</Text>
+              )}
+            </Stack>
+          </Stack>
         </DrawerBody>
       </DrawerContent>
     </Drawer>

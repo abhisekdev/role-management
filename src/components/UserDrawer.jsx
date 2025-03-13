@@ -8,24 +8,37 @@ import {
   Text,
   Stack,
   Alert,
-  AlertIcon
+  AlertIcon,
+  Avatar,
+  Flex,
+  Tag,
+  Divider,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { getUser } from '../api/userApi'
 
 const UserDrawer = ({ data, isOpen, onClose, ref }) => {
-  const { _id, username } = data || {}
+  const { _id, username, email, role, createdAt } = data || {}
 
   const [user, setUser] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const ListItem = ({ label, value }) => {
+  const Container = ({ children }) => {
     return (
-      <Stack spacing={0}>
-        <Text fontWeight={'medium'}>{label}</Text>
-        <Text color={'gray.800'}>{value?.join(', ') || 'Not available'}</Text>
-      </Stack>
+      <Flex
+        gap={2}
+        fontSize={'sm'}
+        flexWrap={'wrap'}
+        justifyContent={'space-between'}
+      >
+        {children}
+      </Flex>
     )
   }
 
@@ -61,7 +74,7 @@ const UserDrawer = ({ data, isOpen, onClose, ref }) => {
       <DrawerContent>
         <DrawerCloseButton mt={1} />
         <DrawerHeader fontSize={'md'} borderBottom={'1px solid lightgray'}>
-          {username}
+          User
         </DrawerHeader>
         <DrawerBody>
           {error && (
@@ -73,16 +86,64 @@ const UserDrawer = ({ data, isOpen, onClose, ref }) => {
           {loading ? (
             <Text mt={2}>Loading...</Text>
           ) : (
-            <Stack mt={2} spacing={5}>
-              <ListItem label={'Privileges'} value={user?.role?.privileges} />
-              <ListItem
-                label={'Features'}
-                value={user?.role?.features?.map((item) => item?.name)}
-              />
-              <ListItem
-                label={'Locations'}
-                value={user?.role?.locations?.map((item) => item?.name)}
-              />
+            <Stack mt={2} spacing={6}>
+              <Flex gap={3} fontSize={'sm'} alignItems={'center'}>
+                <Avatar size={'sm'} name={username || 'Test'} />
+                <Stack spacing={0}>
+                  <Text>{username}</Text>
+                  <Text color={'gray.500'}>{email}</Text>
+                </Stack>
+              </Flex>
+              <Stack spacing={2}>
+                <Container>
+                  <Text>User ID:</Text>
+                  <Text color={'gray.500'}>{_id}</Text>
+                </Container>
+                <Divider />
+                <Container>
+                  <Text>Created:</Text>
+                  <Text color={'gray.500'}>
+                    {new Date(createdAt).toLocaleDateString()}
+                  </Text>
+                </Container>
+                <Divider />
+                <Container>
+                  <Text>Role:</Text>
+                  <Tag size={'sm'} colorScheme={'blue'}>
+                    {role?.name || 'N/A'}
+                  </Tag>
+                </Container>
+              </Stack>
+              <Tabs variant='enclosed'>
+                <TabList>
+                  {['Privileges', 'Features', 'Locations']?.map(
+                    (item, index) => (
+                      <Tab key={index} fontSize={'sm'}>
+                        {item}
+                      </Tab>
+                    )
+                  )}
+                </TabList>
+                <TabPanels>
+                  <TabPanel>
+                    <Tag size={'sm'} colorScheme='orange'>
+                      {user?.role?.privileges?.join(', ') || 'N/A'}
+                    </Tag>
+                  </TabPanel>
+                  <TabPanel>
+                    <Tag size={'sm'} colorScheme='teal'>
+                      {user?.role?.features
+                        ?.map((item) => item?.name)
+                        ?.join(', ') || 'N/A'}
+                    </Tag>
+                  </TabPanel>
+                  <TabPanel>
+                    <Tag size={'sm'} colorScheme='green'>
+                      {user?.role?.locations?.join(', ') || 'N/A'}
+                    </Tag>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
             </Stack>
           )}
         </DrawerBody>

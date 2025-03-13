@@ -70,8 +70,6 @@ const UserTable = ({ data }) => {
 
   const filterRoles = columnFilters.find((f) => f.id === 'role')?.value || []
 
-  console.log('columnFilters', columnFilters)
-
   const onFilterRole = (value) => {
     setColumnFilters((prev) => {
       const roles = prev.find((filter) => filter?.id === 'role')?.value

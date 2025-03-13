@@ -132,6 +132,7 @@ const AssetModal = ({ data, isOpen, onClose }) => {
                 <FormLabel htmlFor='name'>Name</FormLabel>
                 <Input
                   name='name'
+                  maxLength={30}
                   value={formData?.name}
                   onChange={handleChange}
                 />

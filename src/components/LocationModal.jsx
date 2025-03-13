@@ -169,6 +169,7 @@ const LocationModal = ({ data, isOpen, onClose }) => {
                 <FormLabel htmlFor='name'>Name</FormLabel>
                 <Input
                   name='name'
+                  maxLength={20}
                   value={formData?.name}
                   onChange={handleChange}
                 />
